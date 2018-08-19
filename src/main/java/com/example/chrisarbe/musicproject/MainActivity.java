@@ -16,12 +16,20 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import android.widget.Toast;
+
+import static android.widget.AdapterView.*;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
 
     public AlertDialog dialogSearch;
+
+    String[] values = new String[]{"Ironman","Capitan America","Hulk","Thor","Black Widow","Ant man","Spider man"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +47,22 @@ public class MainActivity extends AppCompatActivity
                 /*Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();*/
             }
+        });
+
+        final ListView milista = (ListView)findViewById(R.id.listaInicial);
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, values);
+
+        milista.setAdapter(adapter);
+
+        milista.setOnItemClickListener(new OnItemClickListener(){
+
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id){
+                int item = position;
+                String itemval = (String)milista.getItemAtPosition(position);
+                Toast.makeText(getApplicationContext(), "Position: "+ item+" - Valor: "+itemval, Toast.LENGTH_LONG).show();
+            }
+
         });
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
