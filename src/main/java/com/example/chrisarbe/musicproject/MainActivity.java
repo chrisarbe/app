@@ -200,6 +200,7 @@ public class MainActivity extends AppCompatActivity
                             Log.i("Este es el tamano ",the_json_array.toString());
                             int size = the_json_array.length();
                             Log.i("Este es el tamano",Integer.toString(size));
+                            values = new String[]{};
                             List<String> listFromArray = Arrays.asList(values);
                             List<String> tempList = new ArrayList<String>(listFromArray);
                             arr = Arrays.copyOf(arr, 5); // new size will be 10 elements
