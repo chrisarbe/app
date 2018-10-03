@@ -127,11 +127,11 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_camera) {
-            startActivity(new Intent(MainActivity.this, YoutubeActivity.class));
+
         } else if (id == R.id.nav_gallery) {
 
         } else if (id == R.id.nav_slideshow) {
-
+            startActivity(new Intent(MainActivity.this, RadioStream.class));
         } else if (id == R.id.nav_manage) {
 
         } else if (id == R.id.nav_share) {
@@ -176,7 +176,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void busquedaVideos (String busqueda) {
-        PLACES_URL = "https://www.googleapis.com/youtube/v3/search?part=snippet,id&q="+busqueda+"&type=video&key=AIzaSyA5SjEcYREnw0bFHeZPa21wKAr6sox5j3s";
+        PLACES_URL = "https://www.googleapis.com/youtube/v3/search?part=snippet,id&maxResults=15&q="+busqueda+"&type=video&key=AIzaSyA5SjEcYREnw0bFHeZPa21wKAr6sox5j3s";
         LOG_TAG = "VolleyPlacesRemoteDS";
 
         // Instantiate the RequestQueue
@@ -203,7 +203,7 @@ public class MainActivity extends AppCompatActivity
                             values = new String[]{};
                             List<String> listFromArray = Arrays.asList(values);
                             List<String> tempList = new ArrayList<String>(listFromArray);
-                            arr = Arrays.copyOf(arr, 5); // new size will be 10 elements
+                            arr = Arrays.copyOf(arr, 15); // new size will be 10 elements
                             for (int i = 0; i < size; i++) {
                                 JSONObject another_json_object = the_json_array.getJSONObject(i);
                                 JSONObject result3 = new JSONObject(another_json_object.getString("snippet"));
