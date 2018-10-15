@@ -4,7 +4,15 @@ import android.media.MediaPlayer;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListView;
+import android.widget.Toast;
+
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
 
 import java.io.IOException;
 
@@ -26,11 +34,55 @@ public class RadioStream extends AppCompatActivity {
     private String STREAM_URL_REG ="http://listen.radionomy.com/ledjamradio.mp3";
     private MediaPlayer mPlayer;
 
+    String[] values = new String[]{};
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_radio_stream);
 
+        MobileAds.initialize(this, "ca-app-pub-8744365861161319~7639300880");
+
+        AdView banner2 = (AdView) findViewById(R.id.banner2);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        banner2.loadAd(adRequest);
+
+        final ListView milista = (ListView)findViewById(R.id.lista_radio);
+
+        values = new String[]{"Piano","Electrónica","Reggae","Blue"};
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, values);
+
+        milista.setAdapter(adapter);
+
+        mPlayer = new MediaPlayer();
+
+        milista.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id){
+                int item = position;
+                String itemval = (String)milista.getItemAtPosition(position);
+                if (item == 0) {
+                    try{
+                        mPlayer.reset();
+                        mPlayer.setDataSource(STREAM_URL);
+                        mPlayer.prepareAsync();
+                        mPlayer.setOnPreparedListener(new MediaPlayer.
+                                OnPreparedListener(){
+                            @Override
+                            public void onPrepared(MediaPlayer mp){
+                                mp.start();
+                            }
+                        });
+                    } catch (IOException e){
+                        e.printStackTrace();
+                    }
+                }
+                Toast.makeText(getApplicationContext(), "Position: "+ item+" - Valor: "+itemval, Toast.LENGTH_LONG).show();
+            }
+
+        });
+
+        /*
         button_stop_piano=(Button) findViewById(R.id.button2);
         button_play_piano=(Button) findViewById(R.id.button1);
 
@@ -117,7 +169,7 @@ public class RadioStream extends AppCompatActivity {
             public void onClick(View v){
                 mPlayer.stop();
             }
-        });
+        });*/
     }
 }
 

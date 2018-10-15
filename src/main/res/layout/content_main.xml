@@ -11,14 +11,14 @@
     <ListView
         android:id="@+id/listaInicial"
         android:layout_width="383dp"
-        android:layout_height="427dp"
+        android:layout_height="431dp"
         tools:layout_editor_absoluteX="0dp"
         tools:layout_editor_absoluteY="8dp" />
 
     <com.google.android.gms.ads.AdView xmlns:ads="http://schemas.android.com/apk/res-auto"
         android:id="@+id/banner1"
-        android:layout_width="256dp"
-        android:layout_height="wrap_content"
+        android:layout_width="353dp"
+        android:layout_height="51dp"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginStart="8dp"
