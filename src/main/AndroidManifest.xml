@@ -3,6 +3,8 @@
     package="com.example.chrisarbe.musicproject">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
 
     <application
         android:allowBackup="true"
@@ -11,6 +13,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-8744365861161319~7639300880"/>
+
         <activity
             android:name=".MainActivity"
             android:label="musicZone"
@@ -47,5 +53,7 @@
                 android:value=".MainActivity" />
         </activity>
     </application>
+
+
 
 </manifest>

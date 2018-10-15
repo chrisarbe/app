@@ -16,9 +16,14 @@ public class RadioStream extends AppCompatActivity {
 
     Button button_stop_electronica;
     Button button_play_electronica;
+
+    Button button_stop_reggae;
+    Button button_play_reggae;
+
     private String STREAM_URL ="http://148.72.152.10:1228/stream";
 
     private String STREAM_URL_ELE ="http://ibizaglobalradio.streaming-pro.com:8024/;";
+    private String STREAM_URL_REG ="http://listen.radionomy.com/ledjamradio.mp3";
     private MediaPlayer mPlayer;
 
     @Override
@@ -31,6 +36,10 @@ public class RadioStream extends AppCompatActivity {
 
         button_stop_electronica=(Button) findViewById(R.id.button3);
         button_play_electronica=(Button) findViewById(R.id.button);
+
+        button_stop_reggae=(Button) findViewById(R.id.button5);
+        button_play_reggae=(Button) findViewById(R.id.button4);
+
         mPlayer=new MediaPlayer();
         button_play_piano.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -78,6 +87,32 @@ public class RadioStream extends AppCompatActivity {
             }
         });
         button_stop_electronica.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                mPlayer.stop();
+            }
+        });
+
+        button_play_reggae.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                try{
+                    mPlayer.reset();
+                    mPlayer.setDataSource(STREAM_URL_REG);
+                    mPlayer.prepareAsync();
+                    mPlayer.setOnPreparedListener(new MediaPlayer.
+                            OnPreparedListener(){
+                        @Override
+                        public void onPrepared(MediaPlayer mp){
+                            mp.start();
+                        }
+                    });
+                } catch (IOException e){
+                    e.printStackTrace();
+                }
+            }
+        });
+        button_stop_reggae.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
                 mPlayer.stop();
