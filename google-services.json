@@ -8,20 +8,12 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:675471083613:android:1da7a020336963fb",
+        "mobilesdk_app_id": "1:675471083613:android:db05c78753043f34",
         "android_client_info": {
-          "package_name": "com.example.chrisarbe.musicproject"
+          "package_name": "com.digizone.chrisarbe.musicproject"
         }
       },
       "oauth_client": [
-        {
-          "client_id": "675471083613-b7ug48tlpq06mfvpj2d1qvmgfvrbbfru.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.example.chrisarbe.musicproject",
-            "certificate_hash": "f591f898d021a9c46f7a35466d9dde30cded0f1e"
-          }
-        },
         {
           "client_id": "675471083613-ma7794d7s1ph4eaksmmi28r21psdl3fe.apps.googleusercontent.com",
           "client_type": 3
@@ -37,13 +29,8 @@
           "status": 1
         },
         "appinvite_service": {
-          "status": 2,
-          "other_platform_oauth_client": [
-            {
-              "client_id": "675471083613-ma7794d7s1ph4eaksmmi28r21psdl3fe.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
+          "status": 1,
+          "other_platform_oauth_client": []
         },
         "ads_service": {
           "status": 2

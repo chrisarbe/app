@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.chrisarbe.musicproject">
+    package="com.digizone.chrisarbe.musicproject">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -18,7 +18,7 @@
             android:value="ca-app-pub-8744365861161319~7639300880"/>
 
         <activity
-            android:name=".MainActivity"
+            android:name="com.digizone.chrisarbe.musicproject.MainActivity"
             android:label="musicZone"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -28,29 +28,29 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".Ayuda"
+            android:name="com.digizone.chrisarbe.musicproject.Ayuda"
             android:label="Ayuda"
-            android:parentActivityName=".MainActivity">
+            android:parentActivityName="com.digizone.chrisarbe.musicproject.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
+                android:value="com.digizone.chrisarbe.musicproject.MainActivity" />
         </activity>
         <activity
-            android:name=".AcercaDe"
+            android:name="com.digizone.chrisarbe.musicproject.AcercaDe"
             android:label="Acerca de la App"
-            android:parentActivityName=".MainActivity">
+            android:parentActivityName="com.digizone.chrisarbe.musicproject.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
+                android:value="com.digizone.chrisarbe.musicproject.MainActivity" />
         </activity>
-        <activity android:name=".YoutubeActivity" />
+        <activity android:name="com.digizone.chrisarbe.musicproject.YoutubeActivity" />
         <activity
-            android:name=".RadioStream"
+            android:name="com.digizone.chrisarbe.musicproject.RadioStream"
             android:label="Radio Stream"
-            android:parentActivityName=".MainActivity">
+            android:parentActivityName="com.digizone.chrisarbe.musicproject.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
+                android:value="com.digizone.chrisarbe.musicproject.MainActivity" />
         </activity>
     </application>
 

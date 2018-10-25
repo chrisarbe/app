@@ -1,8 +1,6 @@
-package com.example.chrisarbe.musicproject;
+package com.digizone.chrisarbe.musicproject;
 
 import android.support.constraint.ConstraintLayout;
-import android.support.constraint.Constraints;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ViewGroup;

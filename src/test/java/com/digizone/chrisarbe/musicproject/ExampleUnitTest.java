@@ -1,4 +1,4 @@
-package com.example.chrisarbe.musicproject;
+package com.digizone.chrisarbe.musicproject;
 
 import org.junit.Test;
 
