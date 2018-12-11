@@ -36,6 +36,10 @@ public class RadioStream extends AppCompatActivity {
     private String STREAM_URL_REG ="http://streaming.turbo98.com:7020/;";
     private String STREAM_URL_ROCK ="http://108.61.20.171:10042/stream/;";
     private String STREAM_URL_SALSA ="http://192.99.17.12:6031/stream/;";
+
+    ///********
+    private String DISCO_PARA_DESCARGAR =  "http://199.189.84.11/tb/1/d4/me_toco_perderte_los_chiches_del_vallenato_mp3_13974.mp3";
+    //*********
     private MediaPlayer mPlayer;
 
     String[] values = new String[]{};
@@ -49,6 +53,8 @@ public class RadioStream extends AppCompatActivity {
     public int banderaRock = 0;
 
     public int banderaSalsa = 0;
+
+    public int banderaDiscoDescargar = 0;
 
     private ProgressDialog pDialog;
 
@@ -66,13 +72,13 @@ public class RadioStream extends AppCompatActivity {
         MobileAds.initialize(this, "ca-app-pub-8744365861161319~7639300880");
 
         AdView banner2 = (AdView) findViewById(R.id.banner2);
-        AdRequest adRequest = new AdRequest.Builder().build();
-        //AdRequest adRequest = new AdRequest.Builder().addTestDevice("DC4FDD8F9668C1895E13BF225BFC8268").build();
+        //AdRequest adRequest = new AdRequest.Builder().build();
+        AdRequest adRequest = new AdRequest.Builder().addTestDevice("DC4FDD8F9668C1895E13BF225BFC8268").build();
         banner2.loadAd(adRequest);
 
         final ListView milista = (ListView)findViewById(R.id.lista_radio);
 
-        values = new String[]{"Calm Radio - Solo Piano","Blue Marlin Ibiza Radio","Turbo 98 FM","Classic Rock 109","Salsa Warriors"};
+        values = new String[]{"Calm Radio - Solo Piano","Blue Marlin Ibiza Radio","Turbo 98 FM","Classic Rock 109","Salsa Warriors","Disco para Descargar"};
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, values);
 
@@ -92,6 +98,7 @@ public class RadioStream extends AppCompatActivity {
                     parent.getChildAt(2).setBackgroundColor(Color.parseColor("#FFFFFF"));
                     parent.getChildAt(3).setBackgroundColor(Color.parseColor("#FFFFFF"));
                     parent.getChildAt(4).setBackgroundColor(Color.parseColor("#FFFFFF"));
+                    parent.getChildAt(5).setBackgroundColor(Color.parseColor("#FFFFFF"));
                     try{
                         mPlayer.reset();
                         mPlayer.setDataSource(STREAM_URL);
@@ -120,6 +127,7 @@ public class RadioStream extends AppCompatActivity {
                     parent.getChildAt(2).setBackgroundColor(Color.parseColor("#FFFFFF"));
                     parent.getChildAt(3).setBackgroundColor(Color.parseColor("#FFFFFF"));
                     parent.getChildAt(4).setBackgroundColor(Color.parseColor("#FFFFFF"));
+                    parent.getChildAt(5).setBackgroundColor(Color.parseColor("#FFFFFF"));
                     try{
                         mPlayer.reset();
                         mPlayer.setDataSource(STREAM_URL_ELE);
@@ -148,6 +156,7 @@ public class RadioStream extends AppCompatActivity {
                     parent.getChildAt(1).setBackgroundColor(Color.parseColor("#FFFFFF"));
                     parent.getChildAt(3).setBackgroundColor(Color.parseColor("#FFFFFF"));
                     parent.getChildAt(4).setBackgroundColor(Color.parseColor("#FFFFFF"));
+                    parent.getChildAt(5).setBackgroundColor(Color.parseColor("#FFFFFF"));
                     try{
                         mPlayer.reset();
                         mPlayer.setDataSource(STREAM_URL_REG);
@@ -176,6 +185,7 @@ public class RadioStream extends AppCompatActivity {
                     parent.getChildAt(1).setBackgroundColor(Color.parseColor("#FFFFFF"));
                     parent.getChildAt(2).setBackgroundColor(Color.parseColor("#FFFFFF"));
                     parent.getChildAt(4).setBackgroundColor(Color.parseColor("#FFFFFF"));
+                    parent.getChildAt(5).setBackgroundColor(Color.parseColor("#FFFFFF"));
                     try{
                         mPlayer.reset();
                         mPlayer.setDataSource(STREAM_URL_ROCK);
@@ -204,6 +214,7 @@ public class RadioStream extends AppCompatActivity {
                     parent.getChildAt(1).setBackgroundColor(Color.parseColor("#FFFFFF"));
                     parent.getChildAt(2).setBackgroundColor(Color.parseColor("#FFFFFF"));
                     parent.getChildAt(3).setBackgroundColor(Color.parseColor("#FFFFFF"));
+                    parent.getChildAt(5).setBackgroundColor(Color.parseColor("#FFFFFF"));
                     try{
                         mPlayer.reset();
                         mPlayer.setDataSource(STREAM_URL_SALSA);
@@ -224,6 +235,35 @@ public class RadioStream extends AppCompatActivity {
                     parent.getChildAt(item).setBackgroundColor(Color.parseColor("#FFFFFF"));
                     mPlayer.stop();
                     banderaSalsa = 0;
+                } else if (item == 5 & banderaDiscoDescargar == 0) {
+                    pDialog.setMessage("Cargando Streaming ...");
+                    showDialog();
+                    parent.getChildAt(item).setBackgroundColor(Color.parseColor("#28B463"));
+                    parent.getChildAt(0).setBackgroundColor(Color.parseColor("#FFFFFF"));
+                    parent.getChildAt(1).setBackgroundColor(Color.parseColor("#FFFFFF"));
+                    parent.getChildAt(2).setBackgroundColor(Color.parseColor("#FFFFFF"));
+                    parent.getChildAt(3).setBackgroundColor(Color.parseColor("#FFFFFF"));
+                    parent.getChildAt(4).setBackgroundColor(Color.parseColor("#FFFFFF"));
+                    try{
+                        mPlayer.reset();
+                        mPlayer.setDataSource(DISCO_PARA_DESCARGAR);
+                        mPlayer.prepareAsync();
+                        mPlayer.setOnPreparedListener(new MediaPlayer.
+                                OnPreparedListener(){
+                            @Override
+                            public void onPrepared(MediaPlayer mp){
+                                mp.start();
+                                banderaDiscoDescargar = 1;
+                                hideDialog();
+                            }
+                        });
+                    } catch (IOException e){
+                        e.printStackTrace();
+                    }
+                } else if (item == 5 & banderaDiscoDescargar == 1) {
+                    parent.getChildAt(item).setBackgroundColor(Color.parseColor("#FFFFFF"));
+                    mPlayer.stop();
+                    banderaDiscoDescargar = 0;
                 }
                 //Toast.makeText(getApplicationContext(), "Position: "+ item+" - Valor: "+itemval, Toast.LENGTH_LONG).show();
             }

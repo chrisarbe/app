@@ -5,7 +5,6 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
-
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -15,10 +14,13 @@
         android:theme="@style/AppTheme">
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-8744365861161319~7639300880"/>
+            android:value="ca-app-pub-8744365861161319~7639300880" />
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
 
         <activity
-            android:name="com.digizone.chrisarbe.musicproject.MainActivity"
+            android:name=".MainActivity"
             android:label="musicZone"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -28,32 +30,34 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.digizone.chrisarbe.musicproject.Ayuda"
+            android:name=".Ayuda"
             android:label="Ayuda"
-            android:parentActivityName="com.digizone.chrisarbe.musicproject.MainActivity">
+            android:parentActivityName=".MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.digizone.chrisarbe.musicproject.MainActivity" />
         </activity>
         <activity
-            android:name="com.digizone.chrisarbe.musicproject.AcercaDe"
+            android:name=".AcercaDe"
             android:label="Acerca de la App"
-            android:parentActivityName="com.digizone.chrisarbe.musicproject.MainActivity">
+            android:parentActivityName=".MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.digizone.chrisarbe.musicproject.MainActivity" />
         </activity>
-        <activity android:name="com.digizone.chrisarbe.musicproject.YoutubeActivity" />
+        <activity android:name=".YoutubeActivity" />
         <activity
-            android:name="com.digizone.chrisarbe.musicproject.RadioStream"
+            android:name=".RadioStream"
             android:label="Radio Stream"
-            android:parentActivityName="com.digizone.chrisarbe.musicproject.MainActivity">
+            android:parentActivityName=".MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.digizone.chrisarbe.musicproject.MainActivity" />
         </activity>
+        <activity
+            android:name=".PlayList"
+            android:label="@string/title_activity_play_list"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
-
-
 
 </manifest>

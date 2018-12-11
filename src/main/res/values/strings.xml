@@ -11,4 +11,5 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
     <string name="banner_ad_unit_id">ca-app-pub-8744365861161319~7639300880</string>
+    <string name="title_activity_play_list">PlayList</string>
 </resources>
