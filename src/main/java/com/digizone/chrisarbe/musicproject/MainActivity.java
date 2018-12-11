@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.util.SortedList;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,6 +29,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.commit451.youtubeextractor.YouTubeExtractionResult;
+import com.commit451.youtubeextractor.YouTubeExtractor;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.InterstitialAd;
@@ -40,6 +43,10 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+
 
 import static android.widget.AdapterView.*;
 
@@ -62,6 +69,22 @@ public class MainActivity extends AppCompatActivity
 
     static final String YOUTUBE_DATA_API_KEY = "AIzaSyCq8ylFId73K13bHZD6HxvWjEJOlsYQULI";
 
+    private static final String YOUTUBE_ID = "60ItHLz5WEA";
+
+    private final YouTubeExtractor mExtractor = YouTubeExtractor.create();
+
+    private Callback<YouTubeExtractionResult> mExtractionCallback = new Callback<YouTubeExtractionResult>() {
+        @Override
+        public void onResponse(Call<YouTubeExtractionResult> call, retrofit2.Response<YouTubeExtractionResult> response) {
+            bindVideoResult(response.body());
+        }
+
+        @Override
+        public void onFailure(Call<YouTubeExtractionResult> call, Throwable t) {
+            onError(t);
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,6 +102,12 @@ public class MainActivity extends AppCompatActivity
         mInterstitialAd.setAdUnitId("ca-app-pub-8744365861161319/1978590729");
         //mInterstitialAd.loadAd(new AdRequest.Builder().build());
         mInterstitialAd.loadAd(new AdRequest.Builder().addTestDevice("DC4FDD8F9668C1895E13BF225BFC8268").build());
+
+
+
+        //Hola Mundo
+        mExtractor.extract(YOUTUBE_ID).enqueue((Callback<YouTubeExtractionResult>) mExtractionCallback);
+
 
 
 
@@ -344,5 +373,19 @@ public class MainActivity extends AppCompatActivity
             }
 
         });
+    }
+
+    private void onError(Throwable t) {
+        t.printStackTrace();
+        Toast.makeText(MainActivity.this, "It failed to extract. So sad", Toast.LENGTH_SHORT).show();
+    }
+
+
+    private void bindVideoResult(YouTubeExtractionResult result) {
+
+//        Here you can get download url link
+        Log.d("OnSuccess", "Got a result with the best url: " + result.getBestAvailableQualityVideoUri());
+
+        Toast.makeText(this, "result : " + result.getSd360VideoUri(), Toast.LENGTH_SHORT).show();
     }
 }
