@@ -1,12 +1,17 @@
 package com.digizone.chrisarbe.musicproject;
 
+import android.app.DownloadManager;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.util.SortedList;
 import android.util.Log;
+import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -19,8 +24,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -29,8 +37,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.commit451.youtubeextractor.YouTubeExtractionResult;
-import com.commit451.youtubeextractor.YouTubeExtractor;
+//import com.commit451.youtubeextractor.YouTubeExtractionResult;
+//import com.commit451.youtubeextractor.YouTubeExtractor;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.InterstitialAd;
@@ -44,9 +52,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import retrofit2.Call;
-import retrofit2.Callback;
+//import retrofit2.Call;
+//import retrofit2.Callback;
 
+
+
+import at.huber.youtubeExtractor.VideoMeta;
+import at.huber.youtubeExtractor.YouTubeExtractor;
+import at.huber.youtubeExtractor.YouTubeUriExtractor;
+import at.huber.youtubeExtractor.YtFile;
 
 import static android.widget.AdapterView.*;
 
@@ -69,6 +83,11 @@ public class MainActivity extends AppCompatActivity
 
     static final String YOUTUBE_DATA_API_KEY = "AIzaSyCq8ylFId73K13bHZD6HxvWjEJOlsYQULI";
 
+    String youtubeLink = "https://www.youtube.com/watch?v=60ItHLz5WEA";
+
+    private LinearLayout mainLayout;
+    private ProgressBar mainProgressBar;
+    /*
     private static final String YOUTUBE_ID = "60ItHLz5WEA";
 
     private final YouTubeExtractor mExtractor = YouTubeExtractor.create();
@@ -83,7 +102,12 @@ public class MainActivity extends AppCompatActivity
         public void onFailure(Call<YouTubeExtractionResult> call, Throwable t) {
             onError(t);
         }
-    };
+    };*/
+
+
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,10 +130,29 @@ public class MainActivity extends AppCompatActivity
 
 
         //Hola Mundo
-        mExtractor.extract(YOUTUBE_ID).enqueue((Callback<YouTubeExtractionResult>) mExtractionCallback);
+        //mExtractor.extract(YOUTUBE_ID).enqueue((Callback<YouTubeExtractionResult>) mExtractionCallback);
+        //setContentView(R.layout.content_main);
+        mainLayout = (LinearLayout) findViewById(R.id.main_layout);
+        mainProgressBar = (ProgressBar) findViewById(R.id.prgrBar);
+        // Check how it was started and if we can get the youtube link
+        if (savedInstanceState == null) {
 
+            Toast.makeText(this, "Hola Mundo 0", Toast.LENGTH_LONG).show();
 
-
+            if (youtubeLink != null && (youtubeLink.contains("://youtu.be/") || youtubeLink.contains("youtube.com/watch?v="))) {
+                // We have a valid link
+                getYoutubeDownloadUrl(youtubeLink);
+                Toast.makeText(this, "Hola Mundo 1", Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(this, "Hola Mundo 2", Toast.LENGTH_LONG).show();
+                //finish();
+            }
+        } else if (savedInstanceState != null && youtubeLink != null) {
+            getYoutubeDownloadUrl(youtubeLink);
+        } else {
+            //finish();
+        }
+        //*********
 
         MobileAds.initialize(this, "ca-app-pub-8744365861161319~7639300880");
 
@@ -374,7 +417,7 @@ public class MainActivity extends AppCompatActivity
 
         });
     }
-
+    /*
     private void onError(Throwable t) {
         t.printStackTrace();
         Toast.makeText(MainActivity.this, "It failed to extract. So sad", Toast.LENGTH_SHORT).show();
@@ -387,5 +430,71 @@ public class MainActivity extends AppCompatActivity
         Log.d("OnSuccess", "Got a result with the best url: " + result.getBestAvailableQualityVideoUri());
 
         Toast.makeText(this, "result : " + result.getSd360VideoUri(), Toast.LENGTH_SHORT).show();
+    }*/
+
+    private void getYoutubeDownloadUrl(String youtubeLink) {
+        new YouTubeExtractor(this) {
+
+            @Override
+            public void onExtractionComplete(SparseArray<YtFile> ytFiles, VideoMeta vMeta) {
+                mainProgressBar.setVisibility(View.GONE);
+
+                if (ytFiles == null) {
+                    // Something went wrong we got no urls. Always check this.
+                    finish();
+                    return;
+                }
+                // Iterate over itags
+                for (int i = 0, itag; i < ytFiles.size(); i++) {
+                    itag = ytFiles.keyAt(i);
+                    // ytFile represents one file with its url and meta data
+                    YtFile ytFile = ytFiles.get(itag);
+
+                    // Just add videos in a decent format => height -1 = audio
+                    if (ytFile.getFormat().getHeight() == -1 || ytFile.getFormat().getHeight() >= 360) {
+                        addButtonToMainLayout(vMeta.getTitle(), ytFile);
+                    }
+                }
+            }
+        }.extract(youtubeLink, true, false);
+    }
+
+    private void addButtonToMainLayout(final String videoTitle, final YtFile ytfile) {
+        // Display some buttons and let the user choose the format
+        String btnText = (ytfile.getFormat().getHeight() == -1) ? "Audio " +
+                ytfile.getFormat().getAudioBitrate() + " kbit/s" :
+                ytfile.getFormat().getHeight() + "p";
+        btnText += (ytfile.getFormat().isDashContainer()) ? " dash" : "";
+        Button btn = new Button(this);
+        btn.setText(btnText);
+        btn.setOnClickListener(new OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                String filename;
+                if (videoTitle.length() > 55) {
+                    filename = videoTitle.substring(0, 55) + "." + ytfile.getFormat().getExt();
+                } else {
+                    filename = videoTitle + "." + ytfile.getFormat().getExt();
+                }
+                filename = filename.replaceAll("[\\\\><\"|*?%:#/]", "");
+                downloadFromUrl(ytfile.getUrl(), videoTitle, filename);
+                finish();
+            }
+        });
+        mainLayout.addView(btn);
+    }
+
+    private void downloadFromUrl(String youtubeDlUrl, String downloadTitle, String fileName) {
+        Uri uri = Uri.parse(youtubeDlUrl);
+        DownloadManager.Request request = new DownloadManager.Request(uri);
+        request.setTitle(downloadTitle);
+
+        request.allowScanningByMediaScanner();
+        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName);
+
+        DownloadManager manager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
+        manager.enqueue(request);
     }
 }
