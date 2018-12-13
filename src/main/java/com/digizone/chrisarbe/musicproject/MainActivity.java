@@ -1,13 +1,17 @@
 package com.digizone.chrisarbe.musicproject;
 
+import android.Manifest;
 import android.app.DownloadManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.util.SortedList;
 import android.util.Log;
@@ -48,6 +52,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -64,8 +69,9 @@ import at.huber.youtubeExtractor.YtFile;
 
 import static android.widget.AdapterView.*;
 
+
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener{
 
 
     private InterstitialAd mInterstitialAd;
@@ -87,27 +93,6 @@ public class MainActivity extends AppCompatActivity
 
     private LinearLayout mainLayout;
     private ProgressBar mainProgressBar;
-    /*
-    private static final String YOUTUBE_ID = "60ItHLz5WEA";
-
-    private final YouTubeExtractor mExtractor = YouTubeExtractor.create();
-
-    private Callback<YouTubeExtractionResult> mExtractionCallback = new Callback<YouTubeExtractionResult>() {
-        @Override
-        public void onResponse(Call<YouTubeExtractionResult> call, retrofit2.Response<YouTubeExtractionResult> response) {
-            bindVideoResult(response.body());
-        }
-
-        @Override
-        public void onFailure(Call<YouTubeExtractionResult> call, Throwable t) {
-            onError(t);
-        }
-    };*/
-
-
-
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -126,33 +111,6 @@ public class MainActivity extends AppCompatActivity
         mInterstitialAd.setAdUnitId("ca-app-pub-8744365861161319/1978590729");
         //mInterstitialAd.loadAd(new AdRequest.Builder().build());
         mInterstitialAd.loadAd(new AdRequest.Builder().addTestDevice("DC4FDD8F9668C1895E13BF225BFC8268").build());
-
-
-
-        //Hola Mundo
-        //mExtractor.extract(YOUTUBE_ID).enqueue((Callback<YouTubeExtractionResult>) mExtractionCallback);
-        //setContentView(R.layout.content_main);
-        mainLayout = (LinearLayout) findViewById(R.id.main_layout);
-        mainProgressBar = (ProgressBar) findViewById(R.id.prgrBar);
-        // Check how it was started and if we can get the youtube link
-        if (savedInstanceState == null) {
-
-            Toast.makeText(this, "Hola Mundo 0", Toast.LENGTH_LONG).show();
-
-            if (youtubeLink != null && (youtubeLink.contains("://youtu.be/") || youtubeLink.contains("youtube.com/watch?v="))) {
-                // We have a valid link
-                getYoutubeDownloadUrl(youtubeLink);
-                Toast.makeText(this, "Hola Mundo 1", Toast.LENGTH_LONG).show();
-            } else {
-                Toast.makeText(this, "Hola Mundo 2", Toast.LENGTH_LONG).show();
-                //finish();
-            }
-        } else if (savedInstanceState != null && youtubeLink != null) {
-            getYoutubeDownloadUrl(youtubeLink);
-        } else {
-            //finish();
-        }
-        //*********
 
         MobileAds.initialize(this, "ca-app-pub-8744365861161319~7639300880");
 
@@ -411,33 +369,23 @@ public class MainActivity extends AppCompatActivity
                 int item = position;
                 String itemval = (String)milista.getItemAtPosition(position);
                 YoutubeActivity.YOUTUBE_VIDEO_ID = arr[item];
-                startActivity(new Intent(MainActivity.this, YoutubeActivity.class));
+                youtubeLink = "https://www.youtube.com/watch?v=" + arr[item];
+                dialogSearch = createDownloadYoutube();
+                dialogSearch.show();
+                //startActivity(new Intent(MainActivity.this, YoutubeActivity.class));
                 //Toast.makeText(getApplicationContext(), "Position: "+ item+" - Valor: "+itemval, Toast.LENGTH_LONG).show();
             }
 
         });
     }
-    /*
-    private void onError(Throwable t) {
-        t.printStackTrace();
-        Toast.makeText(MainActivity.this, "It failed to extract. So sad", Toast.LENGTH_SHORT).show();
-    }
 
 
-    private void bindVideoResult(YouTubeExtractionResult result) {
-
-//        Here you can get download url link
-        Log.d("OnSuccess", "Got a result with the best url: " + result.getBestAvailableQualityVideoUri());
-
-        Toast.makeText(this, "result : " + result.getSd360VideoUri(), Toast.LENGTH_SHORT).show();
-    }*/
-
-    private void getYoutubeDownloadUrl(String youtubeLink) {
+   private void getYoutubeDownloadUrl(String youtubeLink) {
         new YouTubeExtractor(this) {
 
             @Override
             public void onExtractionComplete(SparseArray<YtFile> ytFiles, VideoMeta vMeta) {
-                mainProgressBar.setVisibility(View.GONE);
+                //mainProgressBar.setVisibility(View.GONE);
 
                 if (ytFiles == null) {
                     // Something went wrong we got no urls. Always check this.
@@ -479,7 +427,7 @@ public class MainActivity extends AppCompatActivity
                 }
                 filename = filename.replaceAll("[\\\\><\"|*?%:#/]", "");
                 downloadFromUrl(ytfile.getUrl(), videoTitle, filename);
-                finish();
+                //finish();
             }
         });
         mainLayout.addView(btn);
@@ -497,4 +445,38 @@ public class MainActivity extends AppCompatActivity
         DownloadManager manager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
         manager.enqueue(request);
     }
+
+    public AlertDialog createDownloadYoutube() {
+
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        LayoutInflater inflater = this.getLayoutInflater();
+
+        View v = inflater.inflate(R.layout.activity_sample_download, null);
+
+        mainLayout = (LinearLayout) findViewById(R.id.main_layout);
+        mainProgressBar = (ProgressBar) findViewById(R.id.prgrBar);
+        // Check how it was started and if we can get the youtube link
+
+        if (youtubeLink != null && (youtubeLink.contains("://youtu.be/") || youtubeLink.contains("youtube.com/watch?v="))) {
+            // We have a valid link
+            getYoutubeDownloadUrl(youtubeLink);
+            Toast.makeText(this, "Hola Mundo 1", Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(this, "Hola Mundo 2", Toast.LENGTH_LONG).show();
+            //finish();
+        }
+
+        builder.setView(v).setNegativeButton("Cancelar",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+
+        return builder.create();
+    }
+
+
 }
