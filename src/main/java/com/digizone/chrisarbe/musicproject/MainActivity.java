@@ -1,7 +1,9 @@
 package com.digizone.chrisarbe.musicproject;
 
 import android.Manifest;
+import android.app.Dialog;
 import android.app.DownloadManager;
+import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -33,6 +35,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -57,8 +60,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-//import retrofit2.Call;
-//import retrofit2.Callback;
 
 
 
@@ -66,6 +67,7 @@ import at.huber.youtubeExtractor.VideoMeta;
 import at.huber.youtubeExtractor.YouTubeExtractor;
 import at.huber.youtubeExtractor.YouTubeUriExtractor;
 import at.huber.youtubeExtractor.YtFile;
+
 
 import static android.widget.AdapterView.*;
 
@@ -87,12 +89,17 @@ public class MainActivity extends AppCompatActivity
     String PLACES_URL;
     String LOG_TAG;
 
+    String terminoBusqueda;
+
     static final String YOUTUBE_DATA_API_KEY = "AIzaSyCq8ylFId73K13bHZD6HxvWjEJOlsYQULI";
 
-    String youtubeLink = "https://www.youtube.com/watch?v=60ItHLz5WEA";
+    String youtubeLink = "https://www.youtube.com/watch?v=";
+
+    Dialog customDialog = null;
 
     private LinearLayout mainLayout;
     private ProgressBar mainProgressBar;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,6 +107,7 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
 
         mInterstitialAd = new InterstitialAd(this);
         mInterstitialAd.setAdUnitId("ca-app-pub-8744365861161319/1978590729");
@@ -222,6 +230,7 @@ public class MainActivity extends AppCompatActivity
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         String termino = campoSearch.getText().toString();
+                        terminoBusqueda = termino;
                         //Toast.makeText(getApplicationContext(), "Termino : "+ termino, Toast.LENGTH_LONG).show();
                         busquedaVideos(termino);
                     }
@@ -356,22 +365,31 @@ public class MainActivity extends AppCompatActivity
 
         milista.setAdapter(adapter);
 
+
         milista.setOnItemClickListener(new OnItemClickListener(){
 
             public void onItemClick(AdapterView<?> parent, View view, int position, long id){
-
+                /*
                 if (mInterstitialAd.isLoaded()) {
                     mInterstitialAd.show();
                 } else {
                     Log.d("TAG", "The interstitial wasn't loaded yet.");
                 }
-
+                */
                 int item = position;
                 String itemval = (String)milista.getItemAtPosition(position);
                 YoutubeActivity.YOUTUBE_VIDEO_ID = arr[item];
-                youtubeLink = "https://www.youtube.com/watch?v=" + arr[item];
-                dialogSearch = createDownloadYoutube();
-                dialogSearch.show();
+
+                youtubeLink = youtubeLink + arr[item];
+
+                if (youtubeLink != null && (youtubeLink.contains("://youtu.be/") || youtubeLink.contains("youtube.com/watch?v="))) {
+                    // We have a valid link
+                    getYoutubeDownloadUrl(youtubeLink);
+                    //Toast.makeText(this, "Hola Mundo 1", Toast.LENGTH_LONG).show();
+                } else {
+                    //Toast.makeText(this, "Hola Mundo 2", Toast.LENGTH_LONG).show();
+                    //finish();
+                }
                 //startActivity(new Intent(MainActivity.this, YoutubeActivity.class));
                 //Toast.makeText(getApplicationContext(), "Position: "+ item+" - Valor: "+itemval, Toast.LENGTH_LONG).show();
             }
@@ -386,6 +404,9 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onExtractionComplete(SparseArray<YtFile> ytFiles, VideoMeta vMeta) {
                 //mainProgressBar.setVisibility(View.GONE);
+
+                setContentView(R.layout.activity_main);
+                mainLayout = (LinearLayout) findViewById(R.id.main_layout);
 
                 if (ytFiles == null) {
                     // Something went wrong we got no urls. Always check this.
@@ -405,16 +426,17 @@ public class MainActivity extends AppCompatActivity
                 }
             }
         }.extract(youtubeLink, true, false);
+        //dialogSearch = createDownloadYoutube();
+        //dialogSearch.show();
     }
 
     private void addButtonToMainLayout(final String videoTitle, final YtFile ytfile) {
         // Display some buttons and let the user choose the format
-        String btnText = (ytfile.getFormat().getHeight() == -1) ? "Audio " +
-                ytfile.getFormat().getAudioBitrate() + " kbit/s" :
-                ytfile.getFormat().getHeight() + "p";
+        String btnText = (ytfile.getFormat().getHeight() == -1) ? "Audio " + ytfile.getFormat().getAudioBitrate() + " kbit/s" : ytfile.getFormat().getHeight() + "p";
         btnText += (ytfile.getFormat().isDashContainer()) ? " dash" : "";
         Button btn = new Button(this);
         btn.setText(btnText);
+
         btn.setOnClickListener(new OnClickListener() {
 
             @Override
@@ -428,9 +450,19 @@ public class MainActivity extends AppCompatActivity
                 filename = filename.replaceAll("[\\\\><\"|*?%:#/]", "");
                 downloadFromUrl(ytfile.getUrl(), videoTitle, filename);
                 //finish();
+                Intent intent = getIntent();
+                finish();
+                startActivity(intent);
+                busquedaVideos(terminoBusqueda);
+
             }
         });
-        mainLayout.addView(btn);
+        try {
+            mainLayout.addView(btn);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(getApplicationContext(), "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+        }
     }
 
     private void downloadFromUrl(String youtubeDlUrl, String downloadTitle, String fileName) {
@@ -454,10 +486,8 @@ public class MainActivity extends AppCompatActivity
 
         View v = inflater.inflate(R.layout.activity_sample_download, null);
 
-        mainLayout = (LinearLayout) findViewById(R.id.main_layout);
-        mainProgressBar = (ProgressBar) findViewById(R.id.prgrBar);
         // Check how it was started and if we can get the youtube link
-
+        /*
         if (youtubeLink != null && (youtubeLink.contains("://youtu.be/") || youtubeLink.contains("youtube.com/watch?v="))) {
             // We have a valid link
             getYoutubeDownloadUrl(youtubeLink);
@@ -466,7 +496,7 @@ public class MainActivity extends AppCompatActivity
             Toast.makeText(this, "Hola Mundo 2", Toast.LENGTH_LONG).show();
             //finish();
         }
-
+        */
         builder.setView(v).setNegativeButton("Cancelar",
                 new DialogInterface.OnClickListener() {
                     @Override
@@ -477,6 +507,5 @@ public class MainActivity extends AppCompatActivity
 
         return builder.create();
     }
-
 
 }
