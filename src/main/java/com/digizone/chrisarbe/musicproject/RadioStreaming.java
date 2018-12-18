@@ -48,10 +48,8 @@ public class RadioStreaming extends Fragment {
     private String STREAM_URL_REG ="http://streaming.turbo98.com:7020/;";
     private String STREAM_URL_ROCK ="http://108.61.20.171:10042/stream/;";
     private String STREAM_URL_SALSA ="http://192.99.17.12:6031/stream/;";
+    private String STREAM_URL_LATIN =  "http://144.217.64.13:7000/stream/;";
 
-    ///********
-    private String DISCO_PARA_DESCARGAR =  "http://199.189.84.11/tb/1/d4/me_toco_perderte_los_chiches_del_vallenato_mp3_13974.mp3";
-    //*********
     private MediaPlayer mPlayer;
 
     String[] values = new String[]{};
@@ -122,7 +120,7 @@ public class RadioStreaming extends Fragment {
 
         final ListView milista = (ListView)rootView.findViewById(R.id.lista_radio);
 
-        values = new String[]{"Calm Radio - Solo Piano","Blue Marlin Ibiza Radio","Turbo 98 FM","Classic Rock 109","Salsa Warriors","Disco para Descargar"};
+        values = new String[]{"Calm Radio - Solo Piano","Blue Marlin Ibiza Radio","Turbo 98 FM","Classic Rock 109","Salsa Warriors","Suave 107 FM"};
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1, values);
 
@@ -290,7 +288,7 @@ public class RadioStreaming extends Fragment {
                     parent.getChildAt(4).setBackgroundColor(Color.parseColor("#FFFFFF"));
                     try{
                         mPlayer.reset();
-                        mPlayer.setDataSource(DISCO_PARA_DESCARGAR);
+                        mPlayer.setDataSource(STREAM_URL_LATIN);
                         mPlayer.prepareAsync();
                         mPlayer.setOnPreparedListener(new MediaPlayer.
                                 OnPreparedListener(){

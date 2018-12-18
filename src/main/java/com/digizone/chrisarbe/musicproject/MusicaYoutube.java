@@ -1,19 +1,24 @@
 package com.digizone.chrisarbe.musicproject;
 
+import android.app.Dialog;
 import android.app.DownloadManager;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -21,6 +26,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -72,7 +78,7 @@ public class MusicaYoutube extends Fragment {
     String[] arr = {};
 
     static final String YOUTUBE_DATA_API_KEY = "AIzaSyCq8ylFId73K13bHZD6HxvWjEJOlsYQULI";
-    String youtubeLink = "https://www.youtube.com/watch?v=";
+    String youtubeLink;
     public static EditText campoSearch;
 
     String terminoBusqueda;
@@ -82,6 +88,16 @@ public class MusicaYoutube extends Fragment {
     private InterstitialAd mInterstitialAd;
 
     public MainActivity variable = new MainActivity();
+
+    public static FloatingActionButton fab;
+
+    public AlertDialog dialogSearch;
+
+    private ProgressDialog pDialog;
+
+    private android.app.AlertDialog.Builder builder;
+
+    Dialog customDialog = null;
 
     public MusicaYoutube() {
         // Required empty public constructor
@@ -113,6 +129,10 @@ public class MusicaYoutube extends Fragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
 
+        pDialog = new ProgressDialog(getContext());
+        pDialog.setCancelable(false);
+        builder = new android.app.AlertDialog.Builder(getContext());
+
         mInterstitialAd = new InterstitialAd(getContext());
         mInterstitialAd.setAdUnitId("ca-app-pub-8744365861161319/1978590729");
 
@@ -120,15 +140,25 @@ public class MusicaYoutube extends Fragment {
         mInterstitialAd.setAdUnitId("ca-app-pub-8744365861161319/1978590729");
         //mInterstitialAd.loadAd(new AdRequest.Builder().build());
         mInterstitialAd.loadAd(new AdRequest.Builder().addTestDevice("DC4FDD8F9668C1895E13BF225BFC8268").build());
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        final View rootView = inflater.inflate(R.layout.fragment_musica_youtube, container, false);
         busquedaRate();
+        fab = (FloatingActionButton) rootView.findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialogSearch = createSearhDialog();
+                dialogSearch.show();
+            }
+        });
 
-        return inflater.inflate(R.layout.fragment_musica_youtube, container, false);
+        return rootView;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -231,23 +261,103 @@ public class MusicaYoutube extends Fragment {
     }
 
     public void listaVideos () {
+
+        pDialog.setMessage("Cargando Videos ...");
+        showDialog();
+
         final ListView milista = (ListView)getView().findViewById(R.id.listaInicial);
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1, values);
 
         milista.setAdapter(adapter);
 
+        mainLayout = (LinearLayout) getView().findViewById(R.id.main_layout);
+        mainLayout.setVisibility(View.GONE);
 
         milista.setOnItemClickListener(new AdapterView.OnItemClickListener(){
 
             public void onItemClick(AdapterView<?> parent, View view, int position, long id){
+                int item = position;
+                String itemval = (String)milista.getItemAtPosition(position);
+                YoutubeActivity.YOUTUBE_VIDEO_ID = arr[item];
+
+                youtubeLink = "https://www.youtube.com/watch?v=";
+
+                youtubeLink = youtubeLink + arr[item];
+
+                customDialog = new Dialog(getContext(),R.style.Theme_AppCompat_DayNight_Dialog);
+                customDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                //customDialog.setCancelable(false);
+                customDialog.setContentView(R.layout.dialog_option);
+
+                TextView titulo = (TextView) customDialog.findViewById(R.id.titulo);
+                titulo.setText("Opciones de Video");
+
+                TextView contenido = (TextView) customDialog.findViewById(R.id.contenido);
+                contenido.setText("¿Qué deseas hacer?");
+
+                ((Button) customDialog.findViewById(R.id.aceptar)).setOnClickListener(new View.OnClickListener() {
+
+                    @Override
+                    public void onClick(View view)
+                    {
+                        customDialog.dismiss();
+                        if (mInterstitialAd.isLoaded()) {
+                            mInterstitialAd.show();
+                        } else {
+                            Log.d("TAG", "The interstitial wasn't loaded yet.");
+                        }
+                        startActivity(new Intent(getActivity(), YoutubeActivity.class));
+                    }
+                });
+
+                ((Button) customDialog.findViewById(R.id.cancelar)).setOnClickListener(new View.OnClickListener() {
+
+                    @Override
+                    public void onClick(View view)
+                    {
+                        customDialog.dismiss();
+                        if (mInterstitialAd.isLoaded()) {
+                            mInterstitialAd.show();
+                        } else {
+                            Log.d("TAG", "The interstitial wasn't loaded yet.");
+                        }
+                        if (youtubeLink != null && (youtubeLink.contains("://youtu.be/") || youtubeLink.contains("youtube.com/watch?v="))) {
+                            getYoutubeDownloadUrl(youtubeLink);
+                        } else {
+
+                        }
+                    }
+                });
+
+                customDialog.show();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 /*
-                if (mInterstitialAd.isLoaded()) {
-                    mInterstitialAd.show();
-                } else {
-                    Log.d("TAG", "The interstitial wasn't loaded yet.");
-                }
-                */
                 int item = position;
                 String itemval = (String)milista.getItemAtPosition(position);
                 YoutubeActivity.YOUTUBE_VIDEO_ID = arr[item];
@@ -257,16 +367,16 @@ public class MusicaYoutube extends Fragment {
                 if (youtubeLink != null && (youtubeLink.contains("://youtu.be/") || youtubeLink.contains("youtube.com/watch?v="))) {
                     // We have a valid link
                     getYoutubeDownloadUrl(youtubeLink);
-                    Toast.makeText(getContext(), "Entre al if", Toast.LENGTH_LONG).show();
+                    //Toast.makeText(getContext(), "Entre al if", Toast.LENGTH_LONG).show();
                 } else {
-                    Toast.makeText(getContext(), "Entre al else", Toast.LENGTH_LONG).show();
+                    //Toast.makeText(getContext(), "Entre al else", Toast.LENGTH_LONG).show();
                     //finish();
-                }
+                }*/
                 //startActivity(new Intent(MainActivity.this, YoutubeActivity.class));
                 //Toast.makeText(getApplicationContext(), "Position: "+ item+" - Valor: "+itemval, Toast.LENGTH_LONG).show();
             }
-
         });
+        hideDialog();
     }
 
     public void busquedaVideos (String busqueda) {
@@ -361,6 +471,8 @@ public class MusicaYoutube extends Fragment {
     }
 
     private void getYoutubeDownloadUrl(String youtubeLink) {
+        mainLayout = (LinearLayout) getView().findViewById(R.id.main_layout);
+        mainLayout.removeAllViews();
         new YouTubeExtractor(getActivity()) {
 
             @Override
@@ -397,6 +509,7 @@ public class MusicaYoutube extends Fragment {
 
         //getActivity().setContentView(R.layout.download_youtube);
         mainLayout = (LinearLayout) getView().findViewById(R.id.main_layout);
+        mainLayout.setVisibility(View.VISIBLE);
 
         btn.setOnClickListener(new View.OnClickListener() {
 
@@ -411,17 +524,21 @@ public class MusicaYoutube extends Fragment {
                 filename = filename.replaceAll("[\\\\><\"|*?%:#/]", "");
                 downloadFromUrl(ytfile.getUrl(), videoTitle, filename);
                 //finish();
+                /*
                 Intent intent = getActivity().getIntent();
                 getActivity().finish();
                 startActivity(intent);
-                variable.cargarFragment();
+                */
+                //variable.cargarFragment();
                 //busquedaVideos(terminoBusqueda);
+
+                mainLayout.setVisibility(View.GONE);
 
             }
         });
         try {
             mainLayout.addView(btn);
-            Toast.makeText(getContext(), "Agregue boton", Toast.LENGTH_LONG).show();
+            //Toast.makeText(getContext(), "Agregue boton", Toast.LENGTH_LONG).show();
         } catch (Exception e) {
             e.printStackTrace();
             Toast.makeText(getContext().getApplicationContext(), "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
@@ -469,5 +586,15 @@ public class MusicaYoutube extends Fragment {
                 });
 
         return builder.create();
+    }
+
+    private void showDialog() {
+        if (!pDialog.isShowing())
+            pDialog.show();
+    }
+
+    private void hideDialog() {
+        if (pDialog.isShowing())
+            pDialog.dismiss();
     }
 }

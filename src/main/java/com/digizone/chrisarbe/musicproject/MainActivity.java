@@ -33,11 +33,11 @@ public class MainActivity extends AppCompatActivity
 
     private InterstitialAd mInterstitialAd;
 
-    public AlertDialog dialogSearch;
-
     static final String YOUTUBE_DATA_API_KEY = "AIzaSyCq8ylFId73K13bHZD6HxvWjEJOlsYQULI";
 
     Dialog customDialog = null;
+
+    public static FloatingActionButton fab;
 
 
     @Override
@@ -65,18 +65,6 @@ public class MainActivity extends AppCompatActivity
         //AdRequest adRequest = new AdRequest.Builder().build();
         AdRequest adRequest = new AdRequest.Builder().addTestDevice("DC4FDD8F9668C1895E13BF225BFC8268").build();
         banner1.loadAd(adRequest);
-
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //dialogSearch = createSearhDialog();
-                //dialogSearch.show();
-                /*Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();*/
-            }
-        });
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
