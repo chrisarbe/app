@@ -6,16 +6,16 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_camera"
-            android:icon="@drawable/music_note"
+            android:icon="@drawable/library_music"
             android:title="Escuchar Música" />
         <item
             android:id="@+id/nav_gallery"
-            android:icon="@drawable/library_music"
+            android:icon="@drawable/ic_menu_slideshow"
             android:title="Reproductor" />
         <item
             android:id="@+id/nav_slideshow"
-            android:icon="@drawable/ic_menu_slideshow"
-            android:title="Radio Stream" />
+            android:icon="@drawable/radio"
+            android:title="Radio Streaming" />
         <item
             android:id="@+id/nav_manage"
             android:icon="@drawable/ic_menu_manage"

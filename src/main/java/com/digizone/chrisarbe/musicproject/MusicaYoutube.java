@@ -91,6 +91,8 @@ public class MusicaYoutube extends Fragment {
 
     public static FloatingActionButton fab;
 
+    public static FloatingActionButton home;
+
     public AlertDialog dialogSearch;
 
     private ProgressDialog pDialog;
@@ -149,12 +151,23 @@ public class MusicaYoutube extends Fragment {
         // Inflate the layout for this fragment
         final View rootView = inflater.inflate(R.layout.fragment_musica_youtube, container, false);
         busquedaRate();
+
         fab = (FloatingActionButton) rootView.findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 dialogSearch = createSearhDialog();
                 dialogSearch.show();
+            }
+        });
+
+        home = (FloatingActionButton) rootView.findViewById(R.id.home);
+        home.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Fragment fragment = null;
+                fragment = new Home();
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.Contenedor, fragment).commit();
             }
         });
 

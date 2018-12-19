@@ -1,6 +1,7 @@
 package com.digizone.chrisarbe.musicproject;
 
 import android.app.Dialog;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.content.Intent;
 import android.net.Uri;
@@ -28,7 +29,8 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         Reproductor.OnFragmentInteractionListener,
         MusicaYoutube.OnFragmentInteractionListener,
-        RadioStreaming.OnFragmentInteractionListener{
+        RadioStreaming.OnFragmentInteractionListener,
+        Home.OnFragmentInteractionListener{
 
 
     private InterstitialAd mInterstitialAd;
@@ -47,6 +49,8 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        Fragment fragment = null;
+        fragment = new Home();
 
         mInterstitialAd = new InterstitialAd(this);
         mInterstitialAd.setAdUnitId("ca-app-pub-8744365861161319/1978590729");
@@ -74,6 +78,8 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        getSupportFragmentManager().beginTransaction().replace(R.id.Contenedor, fragment).commit();
     }
 
     @Override

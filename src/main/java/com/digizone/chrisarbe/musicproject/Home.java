@@ -3,7 +3,7 @@ package com.digizone.chrisarbe.musicproject;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,12 +13,12 @@ import android.view.ViewGroup;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link Reproductor.OnFragmentInteractionListener} interface
+ * {@link Home.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link Reproductor#newInstance} factory method to
+ * Use the {@link Home#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class Reproductor extends Fragment {
+public class Home extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -30,9 +30,7 @@ public class Reproductor extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
-    public static FloatingActionButton home;
-
-    public Reproductor() {
+    public Home() {
         // Required empty public constructor
     }
 
@@ -42,11 +40,11 @@ public class Reproductor extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment Reproductor.
+     * @return A new instance of fragment Home.
      */
     // TODO: Rename and change types and number of parameters
-    public static Reproductor newInstance(String param1, String param2) {
-        Reproductor fragment = new Reproductor();
+    public static Home newInstance(String param1, String param2) {
+        Home fragment = new Home();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -67,17 +65,11 @@ public class Reproductor extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        final View rootView = inflater.inflate(R.layout.fragment_reproductor, container, false);
+        final View rootView = inflater.inflate(R.layout.fragment_home, container, false);
+        TabLayout tabs = (TabLayout) rootView.findViewById(R.id.tabs);
 
-        home = (FloatingActionButton) rootView.findViewById(R.id.fab2);
-        home.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Fragment fragment = null;
-                fragment = new Home();
-                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.Contenedor, fragment).commit();
-            }
-        });
+        tabs.addTab(tabs.newTab().setText("TOP VIDEOS"));
+        tabs.addTab(tabs.newTab().setText("TOP DESCARGAS"));
         return rootView;
     }
 
