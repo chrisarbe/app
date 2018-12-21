@@ -6,7 +6,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:background="#fafafa"
     android:orientation="vertical"
-    tools:context=".MainActivity">
+    tools:context=".MusicaYoutube">
 
 
 </LinearLayout >

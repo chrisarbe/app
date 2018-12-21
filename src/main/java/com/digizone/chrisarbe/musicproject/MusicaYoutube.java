@@ -143,6 +143,12 @@ public class MusicaYoutube extends Fragment {
         //mInterstitialAd.loadAd(new AdRequest.Builder().build());
         mInterstitialAd.loadAd(new AdRequest.Builder().addTestDevice("DC4FDD8F9668C1895E13BF225BFC8268").build());
 
+        if (mInterstitialAd.isLoaded()) {
+            mInterstitialAd.show();
+        } else {
+            Log.d("TAG", "The interstitial wasn't loaded yet.");
+        }
+
     }
 
     @Override
@@ -170,6 +176,8 @@ public class MusicaYoutube extends Fragment {
                 getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.Contenedor, fragment).commit();
             }
         });
+
+        mainLayout = (LinearLayout) rootView.findViewById(R.id.main_layout);
 
         return rootView;
     }
@@ -330,11 +338,6 @@ public class MusicaYoutube extends Fragment {
                     public void onClick(View view)
                     {
                         customDialog.dismiss();
-                        if (mInterstitialAd.isLoaded()) {
-                            mInterstitialAd.show();
-                        } else {
-                            Log.d("TAG", "The interstitial wasn't loaded yet.");
-                        }
                         if (youtubeLink != null && (youtubeLink.contains("://youtu.be/") || youtubeLink.contains("youtube.com/watch?v="))) {
                             getYoutubeDownloadUrl(youtubeLink);
                         } else {
@@ -565,7 +568,7 @@ public class MusicaYoutube extends Fragment {
 
         request.allowScanningByMediaScanner();
         request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
-        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName);
+        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_MUSIC, fileName);
 
         DownloadManager manager = (DownloadManager) getActivity().getSystemService(Context.DOWNLOAD_SERVICE);
         manager.enqueue(request);

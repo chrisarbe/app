@@ -1,13 +1,20 @@
 package com.digizone.chrisarbe.musicproject;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TabHost;
+
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
+import com.google.android.gms.ads.MobileAds;
 
 
 /**
@@ -29,6 +36,8 @@ public class Home extends Fragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+
+    private InterstitialAd mInterstitialAd;
 
     public Home() {
         // Required empty public constructor
@@ -59,6 +68,22 @@ public class Home extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        mInterstitialAd = new InterstitialAd(getContext());
+        mInterstitialAd.setAdUnitId("ca-app-pub-8744365861161319/1978590729");
+
+        MobileAds.initialize(getContext(),
+                "ca-app-pub-8744365861161319~7639300880");
+
+        mInterstitialAd = new InterstitialAd(getContext());
+        mInterstitialAd.setAdUnitId("ca-app-pub-8744365861161319/8230498605");
+        mInterstitialAd.loadAd(new AdRequest.Builder().build());
+        //mInterstitialAd.loadAd(new AdRequest.Builder().addTestDevice("DC4FDD8F9668C1895E13BF225BFC8268").build());
+
+        if (mInterstitialAd.isLoaded()) {
+            mInterstitialAd.show();
+        } else {
+            Log.d("TAG", "The interstitial wasn't loaded yet.");
+        }
     }
 
     @Override
@@ -66,10 +91,24 @@ public class Home extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         final View rootView = inflater.inflate(R.layout.fragment_home, container, false);
-        TabLayout tabs = (TabLayout) rootView.findViewById(R.id.tabs);
+        Resources res = getResources();
 
-        tabs.addTab(tabs.newTab().setText("TOP VIDEOS"));
-        tabs.addTab(tabs.newTab().setText("TOP DESCARGAS"));
+        TabHost tabs=(TabHost)rootView.findViewById(android.R.id.tabhost);
+        tabs.setup();
+
+        TabHost.TabSpec spec=tabs.newTabSpec("mitab1");
+        spec.setContent(R.id.tab1);
+        spec.setIndicator("TOP VIDEOS",
+                res.getDrawable(android.R.drawable.ic_btn_speak_now));
+        tabs.addTab(spec);
+
+        spec=tabs.newTabSpec("mitab2");
+        spec.setContent(R.id.tab2);
+        spec.setIndicator("TOP DESCARGAS",
+                res.getDrawable(android.R.drawable.ic_dialog_map));
+        tabs.addTab(spec);
+
+        tabs.setCurrentTab(0);
         return rootView;
     }
 

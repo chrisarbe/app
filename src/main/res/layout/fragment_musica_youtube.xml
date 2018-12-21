@@ -9,6 +9,7 @@
 
     <!-- TODO: Update blank fragment layout -->
 
+
     <ListView
         android:id="@+id/listaInicial"
         android:layout_width="383dp"
@@ -20,9 +21,9 @@
         android:id="@+id/main_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
         android:background="#fafafa"
-        android:gravity="center">
+        android:gravity="center"
+        android:orientation="vertical">
 
     </LinearLayout>
 
