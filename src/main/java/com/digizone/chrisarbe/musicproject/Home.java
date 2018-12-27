@@ -2,6 +2,7 @@ package com.digizone.chrisarbe.musicproject;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
@@ -11,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TabHost;
+import android.widget.TextView;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
@@ -36,8 +38,6 @@ public class Home extends Fragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
-
-    private InterstitialAd mInterstitialAd;
 
     public Home() {
         // Required empty public constructor
@@ -68,22 +68,6 @@ public class Home extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-        mInterstitialAd = new InterstitialAd(getContext());
-        mInterstitialAd.setAdUnitId("ca-app-pub-8744365861161319/1978590729");
-
-        MobileAds.initialize(getContext(),
-                "ca-app-pub-8744365861161319~7639300880");
-
-        mInterstitialAd = new InterstitialAd(getContext());
-        mInterstitialAd.setAdUnitId("ca-app-pub-8744365861161319/8230498605");
-        mInterstitialAd.loadAd(new AdRequest.Builder().build());
-        //mInterstitialAd.loadAd(new AdRequest.Builder().addTestDevice("DC4FDD8F9668C1895E13BF225BFC8268").build());
-
-        if (mInterstitialAd.isLoaded()) {
-            mInterstitialAd.show();
-        } else {
-            Log.d("TAG", "The interstitial wasn't loaded yet.");
-        }
     }
 
     @Override
@@ -93,20 +77,38 @@ public class Home extends Fragment {
         final View rootView = inflater.inflate(R.layout.fragment_home, container, false);
         Resources res = getResources();
 
-        TabHost tabs=(TabHost)rootView.findViewById(android.R.id.tabhost);
+        final TabHost tabs = (TabHost)rootView.findViewById(android.R.id.tabhost);
         tabs.setup();
 
-        TabHost.TabSpec spec=tabs.newTabSpec("mitab1");
+        TabHost.TabSpec spec = tabs.newTabSpec("mitab1");
         spec.setContent(R.id.tab1);
-        spec.setIndicator("TOP VIDEOS",
-                res.getDrawable(android.R.drawable.ic_btn_speak_now));
+        spec.setIndicator("TOP VIDEOS", res.getDrawable(android.R.drawable.ic_btn_speak_now));
+        tabs.addTab(spec);
+        tabs.getTabWidget().getChildAt(tabs.getCurrentTab()).setBackgroundColor(Color.parseColor("#797D7F"));
+        TextView tv = (TextView) tabs.getTabWidget().getChildAt(tabs.getCurrentTab()).findViewById(android.R.id.title);
+        tv.setTextColor(Color.WHITE);
+
+        spec = tabs.newTabSpec("mitab2");
+        spec.setContent(R.id.tab2);
+        spec.setIndicator("TOP DESCARGAS", res.getDrawable(android.R.drawable.ic_dialog_map));
         tabs.addTab(spec);
 
-        spec=tabs.newTabSpec("mitab2");
-        spec.setContent(R.id.tab2);
-        spec.setIndicator("TOP DESCARGAS",
-                res.getDrawable(android.R.drawable.ic_dialog_map));
-        tabs.addTab(spec);
+        tabs.setOnTabChangedListener(new TabHost.OnTabChangeListener(){
+            @Override
+            public void onTabChanged(String tabId) {
+                int tab = tabs.getCurrentTab();
+                for (int i = 0; i < tabs.getTabWidget().getChildCount(); i++) {
+                    // When tab is not selected
+                    tabs.getTabWidget().getChildAt(i).setBackgroundColor(Color.parseColor("#2b2b2b"));
+                    TextView tv = (TextView) tabs.getTabWidget().getChildAt(i).findViewById(android.R.id.title);
+                    tv.setTextColor(Color.WHITE);
+                }
+                // When tab is selected
+                tabs.getTabWidget().getChildAt(tabs.getCurrentTab()).setBackgroundColor(Color.parseColor("#797D7F"));
+                TextView tv = (TextView) tabs.getTabWidget().getChildAt(tab).findViewById(android.R.id.title);
+                tv.setTextColor(Color.BLACK);
+            }
+        });
 
         tabs.setCurrentTab(0);
         return rootView;

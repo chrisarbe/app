@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="#fafafa"
+    android:background="#2b2b2b"
     tools:context=".MusicaYoutube">
 
     <!-- TODO: Update blank fragment layout -->
@@ -12,7 +12,7 @@
 
     <ListView
         android:id="@+id/listaInicial"
-        android:layout_width="383dp"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:layout_editor_absoluteX="0dp"
         tools:layout_editor_absoluteY="8dp" />
@@ -21,7 +21,7 @@
         android:id="@+id/main_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#fafafa"
+        android:background="#2b2b2b"
         android:gravity="center"
         android:orientation="vertical">
 

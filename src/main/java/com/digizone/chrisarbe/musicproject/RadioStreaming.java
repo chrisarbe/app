@@ -8,15 +8,18 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.MobileAds;
 
 import java.io.IOException;
@@ -122,7 +125,19 @@ public class RadioStreaming extends Fragment {
 
         values = new String[]{"Calm Radio - Solo Piano","Blue Marlin Ibiza Radio","Turbo 98 FM","Classic Rock 109","Salsa Warriors","Suave 107 FM"};
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1, values);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1, values){
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                View view =super.getView(position, convertView, parent);
+
+                TextView textView=(TextView) view.findViewById(android.R.id.text1);
+
+                /*YOUR CHOICE OF COLOR*/
+                textView.setTextColor(Color.WHITE);
+
+                return view;
+            }
+        };
 
         milista.setAdapter(adapter);
 
@@ -136,11 +151,11 @@ public class RadioStreaming extends Fragment {
                     pDialog.setMessage("Cargando Streaming ...");
                     showDialog();
                     parent.getChildAt(item).setBackgroundColor(Color.parseColor("#28B463"));
-                    parent.getChildAt(1).setBackgroundColor(Color.parseColor("#FFFFFF"));
-                    parent.getChildAt(2).setBackgroundColor(Color.parseColor("#FFFFFF"));
-                    parent.getChildAt(3).setBackgroundColor(Color.parseColor("#FFFFFF"));
-                    parent.getChildAt(4).setBackgroundColor(Color.parseColor("#FFFFFF"));
-                    parent.getChildAt(5).setBackgroundColor(Color.parseColor("#FFFFFF"));
+                    parent.getChildAt(1).setBackgroundColor(Color.parseColor("#2b2b2b"));
+                    parent.getChildAt(2).setBackgroundColor(Color.parseColor("#2b2b2b"));
+                    parent.getChildAt(3).setBackgroundColor(Color.parseColor("#2b2b2b"));
+                    parent.getChildAt(4).setBackgroundColor(Color.parseColor("#2b2b2b"));
+                    parent.getChildAt(5).setBackgroundColor(Color.parseColor("#2b2b2b"));
                     try{
                         mPlayer.reset();
                         mPlayer.setDataSource(STREAM_URL);
@@ -158,18 +173,18 @@ public class RadioStreaming extends Fragment {
                         e.printStackTrace();
                     }
                 } else if (item == 0 & banderaPiano == 1) {
-                    parent.getChildAt(item).setBackgroundColor(Color.parseColor("#FFFFFF"));
+                    parent.getChildAt(item).setBackgroundColor(Color.parseColor("#2b2b2b"));
                     mPlayer.stop();
                     banderaPiano = 0;
                 } else if (item == 1 & banderaElectronica == 0) {
                     pDialog.setMessage("Cargando Streaming ...");
                     showDialog();
                     parent.getChildAt(item).setBackgroundColor(Color.parseColor("#28B463"));
-                    parent.getChildAt(0).setBackgroundColor(Color.parseColor("#FFFFFF"));
-                    parent.getChildAt(2).setBackgroundColor(Color.parseColor("#FFFFFF"));
-                    parent.getChildAt(3).setBackgroundColor(Color.parseColor("#FFFFFF"));
-                    parent.getChildAt(4).setBackgroundColor(Color.parseColor("#FFFFFF"));
-                    parent.getChildAt(5).setBackgroundColor(Color.parseColor("#FFFFFF"));
+                    parent.getChildAt(0).setBackgroundColor(Color.parseColor("#2b2b2b"));
+                    parent.getChildAt(2).setBackgroundColor(Color.parseColor("#2b2b2b"));
+                    parent.getChildAt(3).setBackgroundColor(Color.parseColor("#2b2b2b"));
+                    parent.getChildAt(4).setBackgroundColor(Color.parseColor("#2b2b2b"));
+                    parent.getChildAt(5).setBackgroundColor(Color.parseColor("#2b2b2b"));
                     try{
                         mPlayer.reset();
                         mPlayer.setDataSource(STREAM_URL_ELE);
@@ -187,18 +202,18 @@ public class RadioStreaming extends Fragment {
                         e.printStackTrace();
                     }
                 } else if (item == 1 & banderaElectronica == 1) {
-                    parent.getChildAt(item).setBackgroundColor(Color.parseColor("#FFFFFF"));
+                    parent.getChildAt(item).setBackgroundColor(Color.parseColor("#2b2b2b"));
                     mPlayer.stop();
                     banderaElectronica = 0;
                 } else if (item == 2 & banderaReggae == 0) {
                     pDialog.setMessage("Cargando Streaming ...");
                     showDialog();
                     parent.getChildAt(item).setBackgroundColor(Color.parseColor("#28B463"));
-                    parent.getChildAt(0).setBackgroundColor(Color.parseColor("#FFFFFF"));
-                    parent.getChildAt(1).setBackgroundColor(Color.parseColor("#FFFFFF"));
-                    parent.getChildAt(3).setBackgroundColor(Color.parseColor("#FFFFFF"));
-                    parent.getChildAt(4).setBackgroundColor(Color.parseColor("#FFFFFF"));
-                    parent.getChildAt(5).setBackgroundColor(Color.parseColor("#FFFFFF"));
+                    parent.getChildAt(0).setBackgroundColor(Color.parseColor("#2b2b2b"));
+                    parent.getChildAt(1).setBackgroundColor(Color.parseColor("#2b2b2b"));
+                    parent.getChildAt(3).setBackgroundColor(Color.parseColor("#2b2b2b"));
+                    parent.getChildAt(4).setBackgroundColor(Color.parseColor("#2b2b2b"));
+                    parent.getChildAt(5).setBackgroundColor(Color.parseColor("#2b2b2b"));
                     try{
                         mPlayer.reset();
                         mPlayer.setDataSource(STREAM_URL_REG);
@@ -216,18 +231,18 @@ public class RadioStreaming extends Fragment {
                         e.printStackTrace();
                     }
                 } else if (item == 2 & banderaReggae == 1) {
-                    parent.getChildAt(item).setBackgroundColor(Color.parseColor("#FFFFFF"));
+                    parent.getChildAt(item).setBackgroundColor(Color.parseColor("#2b2b2b"));
                     mPlayer.stop();
                     banderaReggae = 0;
                 } else if (item == 3 & banderaRock == 0) {
                     pDialog.setMessage("Cargando Streaming ...");
                     showDialog();
                     parent.getChildAt(item).setBackgroundColor(Color.parseColor("#28B463"));
-                    parent.getChildAt(0).setBackgroundColor(Color.parseColor("#FFFFFF"));
-                    parent.getChildAt(1).setBackgroundColor(Color.parseColor("#FFFFFF"));
-                    parent.getChildAt(2).setBackgroundColor(Color.parseColor("#FFFFFF"));
-                    parent.getChildAt(4).setBackgroundColor(Color.parseColor("#FFFFFF"));
-                    parent.getChildAt(5).setBackgroundColor(Color.parseColor("#FFFFFF"));
+                    parent.getChildAt(0).setBackgroundColor(Color.parseColor("#2b2b2b"));
+                    parent.getChildAt(1).setBackgroundColor(Color.parseColor("#2b2b2b"));
+                    parent.getChildAt(2).setBackgroundColor(Color.parseColor("#2b2b2b"));
+                    parent.getChildAt(4).setBackgroundColor(Color.parseColor("#2b2b2b"));
+                    parent.getChildAt(5).setBackgroundColor(Color.parseColor("#2b2b2b"));
                     try{
                         mPlayer.reset();
                         mPlayer.setDataSource(STREAM_URL_ROCK);
@@ -245,18 +260,18 @@ public class RadioStreaming extends Fragment {
                         e.printStackTrace();
                     }
                 } else if (item == 3 & banderaRock == 1) {
-                    parent.getChildAt(item).setBackgroundColor(Color.parseColor("#FFFFFF"));
+                    parent.getChildAt(item).setBackgroundColor(Color.parseColor("#2b2b2b"));
                     mPlayer.stop();
                     banderaRock = 0;
                 } else if (item == 4 & banderaSalsa == 0) {
                     pDialog.setMessage("Cargando Streaming ...");
                     showDialog();
                     parent.getChildAt(item).setBackgroundColor(Color.parseColor("#28B463"));
-                    parent.getChildAt(0).setBackgroundColor(Color.parseColor("#FFFFFF"));
-                    parent.getChildAt(1).setBackgroundColor(Color.parseColor("#FFFFFF"));
-                    parent.getChildAt(2).setBackgroundColor(Color.parseColor("#FFFFFF"));
-                    parent.getChildAt(3).setBackgroundColor(Color.parseColor("#FFFFFF"));
-                    parent.getChildAt(5).setBackgroundColor(Color.parseColor("#FFFFFF"));
+                    parent.getChildAt(0).setBackgroundColor(Color.parseColor("#2b2b2b"));
+                    parent.getChildAt(1).setBackgroundColor(Color.parseColor("#2b2b2b"));
+                    parent.getChildAt(2).setBackgroundColor(Color.parseColor("#2b2b2b"));
+                    parent.getChildAt(3).setBackgroundColor(Color.parseColor("#2b2b2b"));
+                    parent.getChildAt(5).setBackgroundColor(Color.parseColor("#2b2b2b"));
                     try{
                         mPlayer.reset();
                         mPlayer.setDataSource(STREAM_URL_SALSA);
@@ -274,18 +289,18 @@ public class RadioStreaming extends Fragment {
                         e.printStackTrace();
                     }
                 } else if (item == 4 & banderaSalsa == 1) {
-                    parent.getChildAt(item).setBackgroundColor(Color.parseColor("#FFFFFF"));
+                    parent.getChildAt(item).setBackgroundColor(Color.parseColor("#2b2b2b"));
                     mPlayer.stop();
                     banderaSalsa = 0;
                 } else if (item == 5 & banderaDiscoDescargar == 0) {
                     pDialog.setMessage("Cargando Streaming ...");
                     showDialog();
                     parent.getChildAt(item).setBackgroundColor(Color.parseColor("#28B463"));
-                    parent.getChildAt(0).setBackgroundColor(Color.parseColor("#FFFFFF"));
-                    parent.getChildAt(1).setBackgroundColor(Color.parseColor("#FFFFFF"));
-                    parent.getChildAt(2).setBackgroundColor(Color.parseColor("#FFFFFF"));
-                    parent.getChildAt(3).setBackgroundColor(Color.parseColor("#FFFFFF"));
-                    parent.getChildAt(4).setBackgroundColor(Color.parseColor("#FFFFFF"));
+                    parent.getChildAt(0).setBackgroundColor(Color.parseColor("#2b2b2b"));
+                    parent.getChildAt(1).setBackgroundColor(Color.parseColor("#2b2b2b"));
+                    parent.getChildAt(2).setBackgroundColor(Color.parseColor("#2b2b2b"));
+                    parent.getChildAt(3).setBackgroundColor(Color.parseColor("#2b2b2b"));
+                    parent.getChildAt(4).setBackgroundColor(Color.parseColor("#2b2b2b"));
                     try{
                         mPlayer.reset();
                         mPlayer.setDataSource(STREAM_URL_LATIN);
@@ -303,7 +318,7 @@ public class RadioStreaming extends Fragment {
                         e.printStackTrace();
                     }
                 } else if (item == 5 & banderaDiscoDescargar == 1) {
-                    parent.getChildAt(item).setBackgroundColor(Color.parseColor("#FFFFFF"));
+                    parent.getChildAt(item).setBackgroundColor(Color.parseColor("#2b2b2b"));
                     mPlayer.stop();
                     banderaDiscoDescargar = 0;
                 }

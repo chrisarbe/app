@@ -5,9 +5,13 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
 
 
 /**
@@ -31,6 +35,8 @@ public class Reproductor extends Fragment {
     private OnFragmentInteractionListener mListener;
 
     public static FloatingActionButton home;
+
+    private InterstitialAd mInterstitialAd;
 
     public Reproductor() {
         // Required empty public constructor
@@ -78,6 +84,19 @@ public class Reproductor extends Fragment {
                 getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.Contenedor, fragment).commit();
             }
         });
+
+        //---------
+        mInterstitialAd = new InterstitialAd(getContext());
+        mInterstitialAd.setAdUnitId("ca-app-pub-8744365861161319/8230498605");
+        mInterstitialAd.loadAd(new AdRequest.Builder().build());
+        //mInterstitialAd.loadAd(new AdRequest.Builder().addTestDevice("DC4FDD8F9668C1895E13BF225BFC8268").build());
+
+        if (mInterstitialAd.isLoaded()) {
+            mInterstitialAd.show();
+        } else {
+            Log.d("TAG", "The interstitial wasn't loaded yet.");
+        }
+        //---------
         return rootView;
     }
 
