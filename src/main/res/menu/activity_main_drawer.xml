@@ -7,26 +7,22 @@
         <item
             android:id="@+id/nav_camera"
             android:icon="@drawable/library_music"
-            android:title="Escuchar Música" />
+            android:title="Descarga tú Música" />
         <item
             android:id="@+id/nav_gallery"
-            android:icon="@drawable/ic_menu_slideshow"
-            android:title="Reproductor" />
+            android:icon="@drawable/play_circle"
+            android:title="Mi Música" />
         <item
             android:id="@+id/nav_slideshow"
             android:icon="@drawable/radio"
             android:title="Radio Streaming" />
-        <item
-            android:id="@+id/nav_manage"
-            android:icon="@drawable/ic_menu_manage"
-            android:title="Herramientas" />
     </group>
 
     <item android:title="Comunidad">
         <menu>
             <item
                 android:id="@+id/nav_share"
-                android:icon="@drawable/ic_menu_share"
+                android:icon="@drawable/share_variant"
                 android:title="Compartir" />
         </menu>
     </item>
