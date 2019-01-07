@@ -7,7 +7,9 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +21,9 @@ import android.widget.ListView;
 import android.widget.MediaController;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
 
 
 /**
@@ -40,6 +45,10 @@ public class Reproductor extends Fragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+
+    private InterstitialAd mInterstitialAd;
+
+    public FloatingActionButton home;
 
     public Reproductor() {
         // Required empty public constructor
@@ -102,6 +111,29 @@ public class Reproductor extends Fragment {
                              Bundle savedInstanceState) {
 
         View rootview = inflater.inflate(R.layout.fragment_reproductor, container, false);
+
+        //---------
+        mInterstitialAd = new InterstitialAd(getContext());
+        mInterstitialAd.setAdUnitId("ca-app-pub-8744365861161319/8230498605");
+        //mInterstitialAd.loadAd(new AdRequest.Builder().build());
+        mInterstitialAd.loadAd(new AdRequest.Builder().addTestDevice("DC4FDD8F9668C1895E13BF225BFC8268").build());
+
+        //---------
+
+        home = (FloatingActionButton) rootview.findViewById(R.id.fab2);
+        home.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mInterstitialAd.isLoaded()) {
+                    mInterstitialAd.show();
+                } else {
+                    Log.d("TAG", "The interstitial wasn't loaded yet.");
+                }
+                Fragment fragment = null;
+                fragment = new Home();
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.Contenedor, fragment).commit();
+            }
+        });
 
         values = new String[]{};
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

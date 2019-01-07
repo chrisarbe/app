@@ -14,7 +14,7 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="28dp"
-        app:srcCompat="@drawable/play" />
+        app:srcCompat="@drawable/music_box" />
 
 
 </RelativeLayout>
