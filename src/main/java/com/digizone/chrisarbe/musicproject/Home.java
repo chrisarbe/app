@@ -1,22 +1,47 @@
 package com.digizone.chrisarbe.musicproject;
 
+import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TabHost;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.MobileAds;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 
 /**
@@ -38,6 +63,25 @@ public class Home extends Fragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+
+    String PLACES_URL;
+    String LOG_TAG;
+
+    String[] values = new String[]{};
+    String[] arr = {};
+
+    public AlertDialog dialogSearch;
+
+    private ProgressDialog pDialog;
+
+    private LinearLayout mainLayout;
+
+    static final String YOUTUBE_DATA_API_KEY = "AIzaSyCq8ylFId73K13bHZD6HxvWjEJOlsYQULI";
+    String youtubeLink;
+
+    Dialog customDialog = null;
+
+    private android.app.AlertDialog.Builder builder;
 
     public Home() {
         // Required empty public constructor
@@ -68,6 +112,10 @@ public class Home extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
+        pDialog = new ProgressDialog(getContext());
+        pDialog.setCancelable(false);
+        builder = new android.app.AlertDialog.Builder(getContext());
     }
 
     @Override
@@ -111,6 +159,10 @@ public class Home extends Fragment {
         });
 
         tabs.setCurrentTab(0);
+
+        mainLayout = (LinearLayout) rootView.findViewById(R.id.main_layout);
+
+        busquedaRate();
         return rootView;
     }
 
@@ -151,5 +203,131 @@ public class Home extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+
+    public void busquedaRate () {
+        PLACES_URL = "https://www.googleapis.com/youtube/v3/search?part=snippet,id&maxResults=20&key=AIzaSyA5SjEcYREnw0bFHeZPa21wKAr6sox5j3s";
+        LOG_TAG = "VolleyPlacesRemoteDS";
+
+        // Instantiate the RequestQueue
+        RequestQueue requestQueue = Volley.newRequestQueue(getContext().getApplicationContext());
+
+        //Prepare the Request
+        JsonObjectRequest request = new JsonObjectRequest(
+                Request.Method.GET, //GET or POST
+                PLACES_URL, //URL
+                null, //Parameters
+                new Response.Listener<JSONObject>() { //Listener OK
+
+                    @Override
+                    public void onResponse(JSONObject responsePlaces) {
+                        //Response OK!! :)
+                        try {
+                            //JSONObject resultado = responsePlaces.getJSONObject("items");
+                            //String cadena = responsePlaces.getString("items").substring(1, responsePlaces.getString("items").length() - 1);
+                            //JSONObject result2 = new JSONObject(cadena);
+                            JSONArray the_json_array = responsePlaces.getJSONArray("items");
+                            Log.i("Este es el tamano ",the_json_array.toString());
+                            int size = the_json_array.length();
+                            Log.i("Este es el tamano",Integer.toString(size));
+                            values = new String[]{};
+                            List<String> listFromArray = Arrays.asList(values);
+                            List<String> tempList = new ArrayList<String>(listFromArray);
+                            arr = Arrays.copyOf(arr, 20); // new size will be 10 elements
+                            for (int i = 0; i < size; i++) {
+                                JSONObject another_json_object = the_json_array.getJSONObject(i);
+                                JSONObject result3 = new JSONObject(another_json_object.getString("snippet"));
+                                tempList.add(result3.getString("title"));
+                                JSONObject result4 = new JSONObject(another_json_object.getString("id"));
+                                arr[i] = result4.getString("videoId");
+                                //Toast.makeText(getApplicationContext(), "Hola: "+ result3.getString("title"), Toast.LENGTH_LONG).show();
+                            }
+                            Log.d(LOG_TAG,responsePlaces.toString());
+                            String[] tempArray = new String[tempList.size()];
+                            values = tempList.toArray(tempArray);
+                            listaVideos();
+                        } catch (JSONException e) {
+                            // JSON error
+                            e.printStackTrace();
+                            Toast.makeText(getContext().getApplicationContext(), "JSON Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                        }
+                    }
+                }, new Response.ErrorListener() { //Listener ERROR
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                //There was an error :(
+                Log.d(LOG_TAG,error.toString());
+            }
+        });
+
+        //Send the request to the requestQueue
+        requestQueue.add(request);
+    }
+
+    public void listaVideos () {
+
+        pDialog.setMessage("Cargando Videos ...");
+        showDialog();
+
+        final ListView milista = (ListView)getView().findViewById(R.id.lista_tab1);
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1, values){
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                View view =super.getView(position, convertView, parent);
+
+                TextView textView=(TextView) view.findViewById(android.R.id.text1);
+
+                /*YOUR CHOICE OF COLOR*/
+                textView.setTextColor(Color.WHITE);
+
+                return view;
+            }
+        };
+
+        milista.setAdapter(adapter);
+
+        //mainLayout = (LinearLayout) getView().findViewById(R.id.main_layout);
+        //mainLayout.setVisibility(View.GONE);
+
+        milista.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id){
+                int item = position;
+                String itemval = (String)milista.getItemAtPosition(position);
+                YoutubeActivity.YOUTUBE_VIDEO_ID = arr[item];
+
+                youtubeLink = "https://www.youtube.com/watch?v=";
+
+                youtubeLink = youtubeLink + arr[item];
+
+                customDialog = new Dialog(getContext(),R.style.Theme_AppCompat_DayNight_Dialog);
+                customDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                //customDialog.setCancelable(false);
+                customDialog.setContentView(R.layout.dialog_option);
+
+                TextView titulo = (TextView) customDialog.findViewById(R.id.titulo);
+                titulo.setText("Opciones de Video");
+
+                TextView contenido = (TextView) customDialog.findViewById(R.id.contenido);
+                contenido.setText("¿Qué deseas hacer?");
+
+                startActivity(new Intent(getActivity(), YoutubeActivity.class));
+
+            }
+        });
+        hideDialog();
+    }
+
+    private void showDialog() {
+        if (!pDialog.isShowing())
+            pDialog.show();
+    }
+
+    private void hideDialog() {
+        if (pDialog.isShowing())
+            pDialog.dismiss();
     }
 }

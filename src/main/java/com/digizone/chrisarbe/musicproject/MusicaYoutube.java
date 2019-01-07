@@ -154,7 +154,7 @@ public class MusicaYoutube extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         final View rootView = inflater.inflate(R.layout.fragment_musica_youtube, container, false);
-        busquedaRate();
+        //busquedaRate();
 
         fab = (FloatingActionButton) rootView.findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -176,6 +176,9 @@ public class MusicaYoutube extends Fragment {
         });
 
         mainLayout = (LinearLayout) rootView.findViewById(R.id.main_layout);
+
+        dialogSearch = createSearhDialog();
+        dialogSearch.show();
 
         return rootView;
     }

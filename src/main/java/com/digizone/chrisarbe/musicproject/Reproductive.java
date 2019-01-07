@@ -59,7 +59,7 @@ public class Reproductive extends AppCompatActivity implements MediaPlayerContro
 
     private void imgUrlAlbum (String imgUrlAlbum){
         if (imgUrlAlbum == null){
-            imgAlbum.setImageResource(R.drawable.play);
+            imgAlbum.setImageResource(R.drawable.logo);
         }else {
             File imgFile = new File(imgUrlAlbum);
             if (imgFile.exists()){
