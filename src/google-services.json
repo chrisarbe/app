@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "675471083613",
+    "firebase_url": "https://musiczone-f555b.firebaseio.com",
+    "project_id": "musiczone-f555b",
+    "storage_bucket": "musiczone-f555b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:675471083613:android:db05c78753043f34",
+        "android_client_info": {
+          "package_name": "com.digizone.chrisarbe.musicproject"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "675471083613-7c3t4bg5tvsupa0rkeop5unq8kuia20b.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.digizone.chrisarbe.musicproject",
+            "certificate_hash": "dffca38a38d597ce57db776077700a036e4020c8"
+          }
+        },
+        {
+          "client_id": "675471083613-ma7794d7s1ph4eaksmmi28r21psdl3fe.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCq8ylFId73K13bHZD6HxvWjEJOlsYQULI"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "675471083613-ma7794d7s1ph4eaksmmi28r21psdl3fe.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
