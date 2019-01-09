@@ -351,6 +351,7 @@ public class RadioStreaming extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+        mPlayer.stop();
     }
 
     /**

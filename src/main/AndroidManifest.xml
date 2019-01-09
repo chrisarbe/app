@@ -8,6 +8,11 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
+    <!-- To auto-complete the email text field in the login form with the user's emails -->
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.READ_PROFILE" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -38,8 +43,8 @@
         </activity>
         <activity
             android:name=".MainActivity"
-            android:label="musicZone"
             android:configChanges="orientation"
+            android:label="musicZone"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -80,8 +85,11 @@
         <activity
             android:name=".Reproductive"
             android:configChanges="orientation"
-            android:screenOrientation="portrait"
-            android:label="Canciones" />
+            android:label="Canciones"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".LoginActivity"
+            android:label="Iniciar Sesion" />
     </application>
 
 </manifest>

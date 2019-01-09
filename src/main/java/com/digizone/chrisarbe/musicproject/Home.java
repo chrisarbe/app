@@ -133,8 +133,10 @@ public class Home extends Fragment {
         spec.setIndicator("TOP VIDEOS", res.getDrawable(android.R.drawable.ic_btn_speak_now));
         tabs.addTab(spec);
         tabs.getTabWidget().getChildAt(tabs.getCurrentTab()).setBackgroundColor(Color.parseColor("#797D7F"));
-        TextView tv = (TextView) tabs.getTabWidget().getChildAt(tabs.getCurrentTab()).findViewById(android.R.id.title);
-        tv.setTextColor(Color.WHITE);
+
+        TextView tv = (TextView) tabs.getTabWidget().getChildAt(0).findViewById(android.R.id.title);
+        tv.setTextColor(Color.BLACK);
+
 
         spec = tabs.newTabSpec("mitab2");
         spec.setContent(R.id.tab2);
