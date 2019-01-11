@@ -48,9 +48,6 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        Fragment fragment = null;
-        fragment = new Home();
-
         MobileAds.initialize(this, "ca-app-pub-8744365861161319~7639300880");
 
         AdView banner1 = (AdView) findViewById(R.id.banner1);
@@ -68,7 +65,10 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        //getSupportFragmentManager().beginTransaction().replace(R.id.Contenedor, fragment).commit();
+        Fragment fragment = null;
+        fragment = new Home();
+
+        getSupportFragmentManager().beginTransaction().replace(R.id.Contenedor, fragment).commit();
     }
 
     @Override

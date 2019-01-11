@@ -334,6 +334,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                         Intent i = new Intent(getApplicationContext(), MainActivity.class);
                         startActivity(i);
                     } else {
+                        showProgress(false);
                         Toast.makeText(getApplicationContext(), "Datos invalidos, por favor verificar", Toast.LENGTH_LONG).show();
                     }
                 }while(c.moveToNext());
