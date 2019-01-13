@@ -40,7 +40,6 @@ public class Reproductive extends AppCompatActivity implements MediaPlayerContro
         Bundle bundle = this.getIntent().getExtras();
         FilePath = bundle.getString("Url");
         urlAlbum = bundle.getString("urlAlbum");
-        lista = (ArrayList<String>) getIntent().getStringArrayListExtra("arrPath");
         imgUrlAlbum(urlAlbum);
         playAudio();
 

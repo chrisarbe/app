@@ -60,22 +60,19 @@
             android:layout_width="55dp"
             android:layout_height="55dp"
             android:layout_weight="1"
+            android:gravity="center_vertical|center_horizontal"
             android:orientation="vertical">
 
             <TextView
                 android:id="@+id/textView_Time"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:gravity="center_vertical|center_horizontal"
                 android:text="Una Mas"
                 android:textColor="@android:color/background_light"
-                android:textSize="8sp" />
+                android:textSize="8sp"
+                android:textStyle="italic" />
 
-            <ImageView
-                android:id="@+id/imageView_PlayBarra"
-                android:layout_width="36dp"
-                android:layout_height="wrap_content"
-                app:srcCompat="@drawable/play_circle_outline"
-                android:contentDescription="Hola Mundo" />
         </LinearLayout>
 
     </LinearLayout>
