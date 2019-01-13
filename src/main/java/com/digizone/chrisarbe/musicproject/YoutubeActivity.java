@@ -39,7 +39,7 @@ public class YoutubeActivity extends YouTubeBaseActivity
     public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b) {
         Log.d(TAG, "Exito");
         if (!b) {
-            youTubePlayer.cueVideo(YOUTUBE_VIDEO_ID);
+            youTubePlayer.loadVideo(YOUTUBE_VIDEO_ID);
         }
     }
 

@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
@@ -132,10 +133,10 @@ public class Home extends Fragment {
         spec.setContent(R.id.tab1);
         spec.setIndicator("TOP VIDEOS", res.getDrawable(android.R.drawable.ic_btn_speak_now));
         tabs.addTab(spec);
-        tabs.getTabWidget().getChildAt(tabs.getCurrentTab()).setBackgroundColor(Color.parseColor("#797D7F"));
+        //tabs.getTabWidget().getChildAt(tabs.getCurrentTab()).setBackgroundColor(Color.parseColor("#797D7F"));
 
         TextView tv = (TextView) tabs.getTabWidget().getChildAt(0).findViewById(android.R.id.title);
-        tv.setTextColor(Color.BLACK);
+        tv.setTextColor(Color.WHITE);
 
 
         spec = tabs.newTabSpec("mitab2");
@@ -149,14 +150,14 @@ public class Home extends Fragment {
                 int tab = tabs.getCurrentTab();
                 for (int i = 0; i < tabs.getTabWidget().getChildCount(); i++) {
                     // When tab is not selected
-                    tabs.getTabWidget().getChildAt(i).setBackgroundColor(Color.parseColor("#2b2b2b"));
+                    //tabs.getTabWidget().getChildAt(i).setBackgroundColor(Color.parseColor("#2b2b2b"));
                     TextView tv = (TextView) tabs.getTabWidget().getChildAt(i).findViewById(android.R.id.title);
-                    tv.setTextColor(Color.WHITE);
+                    tv.setTextColor(Color.parseColor("#FFFFFF"));
                 }
                 // When tab is selected
-                tabs.getTabWidget().getChildAt(tabs.getCurrentTab()).setBackgroundColor(Color.parseColor("#797D7F"));
+                //tabs.getTabWidget().getChildAt(tabs.getCurrentTab()).setBackgroundColor(Color.parseColor("#797D7F"));
                 TextView tv = (TextView) tabs.getTabWidget().getChildAt(tab).findViewById(android.R.id.title);
-                tv.setTextColor(Color.BLACK);
+                tv.setTextColor(Color.WHITE);
             }
         });
 

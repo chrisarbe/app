@@ -1,6 +1,7 @@
 package com.digizone.chrisarbe.musicproject;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.Dialog;
 import android.app.DownloadManager;
 import android.app.ProgressDialog;
@@ -18,6 +19,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
@@ -26,8 +28,10 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -47,13 +51,19 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import at.huber.youtubeExtractor.VideoMeta;
 import at.huber.youtubeExtractor.YouTubeExtractor;
 import at.huber.youtubeExtractor.YtFile;
+
+import android.widget.ArrayAdapter;
 
 
 /**
@@ -106,9 +116,16 @@ public class MusicaYoutube extends Fragment {
 
     Dialog customDialog = null;
 
+    private List<YtFragmentedVideo> formatsToShowList;
+
+    private static final int ITAG_FOR_AUDIO = 140;
+
+
     private static final int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 1 ;
 
     private static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 1 ;
+
+
 
     public MusicaYoutube() {
         // Required empty public constructor
@@ -281,7 +298,6 @@ public class MusicaYoutube extends Fragment {
                                 tempList.add(result3.getString("title"));
                                 JSONObject result4 = new JSONObject(another_json_object.getString("id"));
                                 arr[i] = result4.getString("videoId");
-                                //Toast.makeText(getApplicationContext(), "Hola: "+ result3.getString("title"), Toast.LENGTH_LONG).show();
                             }
                             Log.d(LOG_TAG,responsePlaces.toString());
                             String[] tempArray = new String[tempList.size()];
@@ -313,14 +329,14 @@ public class MusicaYoutube extends Fragment {
 
         final ListView milista = (ListView)getView().findViewById(R.id.listaInicial);
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1, values){
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_expandable_list_item_1, values){
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
                 View view =super.getView(position, convertView, parent);
 
                 TextView textView=(TextView) view.findViewById(android.R.id.text1);
 
-                /*YOUR CHOICE OF COLOR*/
+
                 textView.setTextColor(Color.WHITE);
 
                 return view;
@@ -433,7 +449,7 @@ public class MusicaYoutube extends Fragment {
     }
 
     public void busquedaVideos (String busqueda) {
-        PLACES_URL = "https://www.googleapis.com/youtube/v3/search?part=snippet,id&maxResults=20&q="+busqueda+"&type=video&key=AIzaSyA5SjEcYREnw0bFHeZPa21wKAr6sox5j3s";
+        PLACES_URL = "https://www.googleapis.com/youtube/v3/search?part=snippet,id&maxResults=50&q="+busqueda+"&type=video&key=AIzaSyA5SjEcYREnw0bFHeZPa21wKAr6sox5j3s";
         LOG_TAG = "VolleyPlacesRemoteDS";
 
         // Instantiate the RequestQueue
@@ -460,14 +476,16 @@ public class MusicaYoutube extends Fragment {
                             values = new String[]{};
                             List<String> listFromArray = Arrays.asList(values);
                             List<String> tempList = new ArrayList<String>(listFromArray);
-                            arr = Arrays.copyOf(arr, 20); // new size will be 10 elements
+                            arr = Arrays.copyOf(arr, 50); // new size will be 10 elements
                             for (int i = 0; i < size; i++) {
                                 JSONObject another_json_object = the_json_array.getJSONObject(i);
                                 JSONObject result3 = new JSONObject(another_json_object.getString("snippet"));
                                 tempList.add(result3.getString("title"));
                                 JSONObject result4 = new JSONObject(another_json_object.getString("id"));
                                 arr[i] = result4.getString("videoId");
-                                //Toast.makeText(getApplicationContext(), "Hola: "+ result3.getString("title"), Toast.LENGTH_LONG).show();
+                                JSONObject result5 = new JSONObject(result3.getString("thumbnails"));
+                                JSONObject result6 = new JSONObject(result5.getString("default"));
+                                //Toast.makeText(getContext(), "Hola: "+ result6.getString("url"), Toast.LENGTH_LONG).show();
                             }
                             Log.d(LOG_TAG,responsePlaces.toString());
                             String[] tempArray = new String[tempList.size()];
@@ -528,7 +546,7 @@ public class MusicaYoutube extends Fragment {
         mainLayout = (LinearLayout) getView().findViewById(R.id.main_layout);
         mainLayout.removeAllViews();
         new YouTubeExtractor(getActivity()) {
-
+            /*
             @Override
             public void onExtractionComplete(SparseArray<YtFile> ytFiles, VideoMeta vMeta) {
                 //mainProgressBar.setVisibility(View.GONE);
@@ -548,15 +566,42 @@ public class MusicaYoutube extends Fragment {
                         addButtonToMainLayout(vMeta.getTitle(), ytFile);
                     }
                 }
+            }*/
+            @Override
+            public void onExtractionComplete(SparseArray<YtFile> ytFiles, VideoMeta vMeta) {
+                //mainProgressBar.setVisibility(View.GONE);
+                if (ytFiles == null) {
+                    // Something went wrong we got no urls. Always check this.
+                    getActivity().finish();
+                    return;
+                }
+                formatsToShowList = new ArrayList<>();
+                for (int i = 0, itag; i < ytFiles.size(); i++) {
+                    itag = ytFiles.keyAt(i);
+                    YtFile ytFile = ytFiles.get(itag);
+
+                    if (ytFile.getFormat().getHeight() == -1 || ytFile.getFormat().getHeight() >= 360) {
+                        addFormatToList(ytFile, ytFiles);
+                    }
+                }
+                Collections.sort(formatsToShowList, new Comparator<YtFragmentedVideo>() {
+                    @Override
+                    public int compare(YtFragmentedVideo lhs, YtFragmentedVideo rhs) {
+                        return lhs.height - rhs.height;
+                    }
+                });
+                for (YtFragmentedVideo files : formatsToShowList) {
+                    addButtonToMainLayout(vMeta.getTitle(), files);
+                }
             }
         }.extract(youtubeLink, true, false);
         //dialogSearch = createDownloadYoutube();
         //dialogSearch.show();
     }
 
-    private void addButtonToMainLayout(final String videoTitle, final YtFile ytfile) {
+    private void addButtonToMainLayout(final String videoTitle, final YtFragmentedVideo ytFrVideo) {
         // Display some buttons and let the user choose the format
-        String btnText = (ytfile.getFormat().getHeight() == -1) ? "Audio " + ytfile.getFormat().getAudioBitrate() + " kbit/s" : ytfile.getFormat().getHeight() + "p";
+        /*String btnText = (ytfile.getFormat().getHeight() == -1) ? "Audio " + ytfile.getFormat().getAudioBitrate() + " kbit/s" : ytfile.getFormat().getHeight() + "p";
         btnText += (ytfile.getFormat().isDashContainer()) ? " dash" : "";
         Button btn = new Button(getContext());
         btn.setText(btnText);
@@ -577,7 +622,7 @@ public class MusicaYoutube extends Fragment {
                 }
                 filename = filename.replaceAll("[\\\\><\"|*?%:#/]", "");
                 downloadFromUrl(ytfile.getUrl(), videoTitle, filename);
-                //finish();
+                //finish();*/
                 /*
                 Intent intent = getActivity().getIntent();
                 getActivity().finish();
@@ -586,19 +631,62 @@ public class MusicaYoutube extends Fragment {
                 //variable.cargarFragment();
                 //busquedaVideos(terminoBusqueda);
 
-                mainLayout.setVisibility(View.GONE);
+                //mainLayout.setVisibility(View.GONE);
 
-            }
-        });
-        try {
+            //}
+        //});
+        /*try {
             mainLayout.addView(btn);
             //Toast.makeText(getContext(), "Agregue boton", Toast.LENGTH_LONG).show();
         } catch (Exception e) {
             e.printStackTrace();
             Toast.makeText(getContext().getApplicationContext(), "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
-        }
-    }
+        }*/
 
+        // Display some buttons and let the user choose the format
+        String btnText;
+        if (ytFrVideo.height == -1)
+            btnText = "Audio " + ytFrVideo.audioFile.getFormat().getAudioBitrate() + " kbit/s";
+        else
+            btnText = (ytFrVideo.videoFile.getFormat().getFps() == 60) ? ytFrVideo.height + "p60" :
+                    ytFrVideo.height + "p";
+        Button btn = new Button(getContext());
+        btn.setText(btnText);
+
+        mainLayout = (LinearLayout) getView().findViewById(R.id.main_layout);
+        mainLayout.setVisibility(View.VISIBLE);
+        btn.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                String filename;
+                if (videoTitle.length() > 55) {
+                    filename = videoTitle.substring(0, 55);
+                } else {
+                    filename = videoTitle;
+                }
+                filename = filename.replaceAll("[\\\\><\"|*?%:#/]", "");
+                filename += (ytFrVideo.height == -1) ? "" : "-" + ytFrVideo.height + "p";
+                String downloadIds = "";
+                boolean hideAudioDownloadNotification = false;
+                if (ytFrVideo.videoFile != null) {
+                    downloadIds += downloadFromUrl(ytFrVideo.videoFile.getUrl(), videoTitle,
+                            filename + "." + ytFrVideo.videoFile.getFormat().getExt(), false);
+                    downloadIds += "-";
+                    hideAudioDownloadNotification = true;
+                }
+                if (ytFrVideo.audioFile != null) {
+                    downloadIds += downloadFromUrl(ytFrVideo.audioFile.getUrl(), videoTitle,
+                            filename + "." + ytFrVideo.audioFile.getFormat().getExt(), hideAudioDownloadNotification);
+                }
+                if (ytFrVideo.audioFile != null)
+                    cacheDownloadIds(downloadIds);
+                //getActivity().finish();
+            }
+        });
+        mainLayout.addView(btn);
+    }
+    /*
     private void downloadFromUrl(String youtubeDlUrl, String downloadTitle, String fileName) {
         Uri uri = Uri.parse(youtubeDlUrl);
         DownloadManager.Request request = new DownloadManager.Request(uri);
@@ -610,6 +698,22 @@ public class MusicaYoutube extends Fragment {
 
         DownloadManager manager = (DownloadManager) getActivity().getSystemService(Context.DOWNLOAD_SERVICE);
         manager.enqueue(request);
+    }*/
+
+    private long downloadFromUrl(String youtubeDlUrl, String downloadTitle, String fileName, boolean hide) {
+        Uri uri = Uri.parse(youtubeDlUrl);
+        DownloadManager.Request request = new DownloadManager.Request(uri);
+        request.setTitle(downloadTitle);
+        if (hide) {
+            request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_HIDDEN);
+            request.setVisibleInDownloadsUi(false);
+        } else
+            request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+
+        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName);
+
+        DownloadManager manager = (DownloadManager) getActivity().getSystemService(Context.DOWNLOAD_SERVICE);
+        return manager.enqueue(request);
     }
 
     public AlertDialog createDownloadYoutube() {
@@ -650,5 +754,45 @@ public class MusicaYoutube extends Fragment {
     private void hideDialog() {
         if (pDialog.isShowing())
             pDialog.dismiss();
+    }
+
+    private class YtFragmentedVideo {
+        int height;
+        YtFile audioFile;
+        YtFile videoFile;
+    }
+
+    private void cacheDownloadIds(String downloadIds) {
+        File dlCacheFile = new File(getActivity().getCacheDir().getAbsolutePath() + "/" + downloadIds);
+        try {
+            dlCacheFile.createNewFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void addFormatToList(YtFile ytFile, SparseArray<YtFile> ytFiles) {
+        int height = ytFile.getFormat().getHeight();
+        if (height != -1) {
+            for (YtFragmentedVideo frVideo : formatsToShowList) {
+                if (frVideo.height == height && (frVideo.videoFile == null ||
+                        frVideo.videoFile.getFormat().getFps() == ytFile.getFormat().getFps())) {
+                    return;
+                }
+            }
+        }
+        YtFragmentedVideo frVideo = new YtFragmentedVideo();
+        frVideo.height = height;
+        if (ytFile.getFormat().isDashContainer()) {
+            if (height > 0) {
+                frVideo.videoFile = ytFile;
+                frVideo.audioFile = ytFiles.get(ITAG_FOR_AUDIO);
+            } else {
+                frVideo.audioFile = ytFile;
+            }
+        } else {
+            frVideo.videoFile = ytFile;
+        }
+        formatsToShowList.add(frVideo);
     }
 }
