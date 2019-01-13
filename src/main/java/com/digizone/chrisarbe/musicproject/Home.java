@@ -5,8 +5,11 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.icu.util.RangeValueIterator;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
@@ -20,8 +23,10 @@ import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.SimpleAdapter;
 import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -35,13 +40,20 @@ import com.android.volley.toolbox.Volley;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.MobileAds;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 
@@ -82,6 +94,8 @@ public class Home extends Fragment {
 
     Dialog customDialog = null;
 
+    List<HashMap<String, String>> aList;
+
     private android.app.AlertDialog.Builder builder;
 
     public Home() {
@@ -117,6 +131,7 @@ public class Home extends Fragment {
         pDialog = new ProgressDialog(getContext());
         pDialog.setCancelable(false);
         builder = new android.app.AlertDialog.Builder(getContext());
+
     }
 
     @Override
@@ -210,8 +225,10 @@ public class Home extends Fragment {
 
 
     public void busquedaRate () {
-        PLACES_URL = "https://www.googleapis.com/youtube/v3/search?part=snippet,id&maxResults=20&key=AIzaSyA5SjEcYREnw0bFHeZPa21wKAr6sox5j3s";
+        PLACES_URL = "https://www.googleapis.com/youtube/v3/search?part=snippet,id&maxResults=50&key=AIzaSyA5SjEcYREnw0bFHeZPa21wKAr6sox5j3s";
         LOG_TAG = "VolleyPlacesRemoteDS";
+
+        aList = new ArrayList<HashMap<String, String>>();
 
         // Instantiate the RequestQueue
         RequestQueue requestQueue = Volley.newRequestQueue(getContext().getApplicationContext());
@@ -237,14 +254,24 @@ public class Home extends Fragment {
                             values = new String[]{};
                             List<String> listFromArray = Arrays.asList(values);
                             List<String> tempList = new ArrayList<String>(listFromArray);
-                            arr = Arrays.copyOf(arr, 20); // new size will be 10 elements
+                            arr = Arrays.copyOf(arr, 50); // new size will be 10 elements
                             for (int i = 0; i < size; i++) {
                                 JSONObject another_json_object = the_json_array.getJSONObject(i);
                                 JSONObject result3 = new JSONObject(another_json_object.getString("snippet"));
                                 tempList.add(result3.getString("title"));
                                 JSONObject result4 = new JSONObject(another_json_object.getString("id"));
                                 arr[i] = result4.getString("videoId");
-                                //Toast.makeText(getApplicationContext(), "Hola: "+ result3.getString("title"), Toast.LENGTH_LONG).show();
+                                JSONObject result5 = new JSONObject(result3.getString("thumbnails"));
+                                JSONObject result6 = new JSONObject(result5.getString("default"));
+                                //Toast.makeText(getContext(), "Hola: "+ result6.getString("url"), Toast.LENGTH_LONG).show();
+
+                                File tmpFile = urlImage(result6.getString("url"), i);
+
+                                HashMap<String, String> hm = new HashMap<String, String>();
+                                hm.put("name", result3.getString("title"));
+                                hm.put("image", R.drawable.music_box + "");
+                                //Toast.makeText(getContext(), Picasso.with(getContext()).load(result6.getString("url")).toString(), Toast.LENGTH_LONG).show();
+                                aList.add(hm);
                             }
                             Log.d(LOG_TAG,responsePlaces.toString());
                             String[] tempArray = new String[tempList.size()];
@@ -276,6 +303,9 @@ public class Home extends Fragment {
 
         final ListView milista = (ListView)getView().findViewById(R.id.lista_tab1);
 
+        ImageView img=(ImageView)getView().findViewById(R.id.iconList);
+
+        /*
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1, values){
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
@@ -283,14 +313,22 @@ public class Home extends Fragment {
 
                 TextView textView=(TextView) view.findViewById(android.R.id.text1);
 
-                /*YOUR CHOICE OF COLOR*/
                 textView.setTextColor(Color.WHITE);
 
                 return view;
             }
-        };
+        };*/
 
-        milista.setAdapter(adapter);
+        String[] from={"name","image"};//string array
+        int[] to={R.id.nombre_fila_lista,R.id.iconList};//int array of views id's
+
+        SimpleAdapter simpleAdapter = new SimpleAdapter(getActivity(), aList, R.layout.fila_lista, from, to);
+        milista.setAdapter(simpleAdapter);
+
+        //milista.setAdapter(adapter);
+
+
+
 
         //mainLayout = (LinearLayout) getView().findViewById(R.id.main_layout);
         //mainLayout.setVisibility(View.GONE);
@@ -299,7 +337,7 @@ public class Home extends Fragment {
 
             public void onItemClick(AdapterView<?> parent, View view, int position, long id){
                 int item = position;
-                String itemval = (String)milista.getItemAtPosition(position);
+                //String itemval = (String)milista.getItemAtPosition(position);
                 YoutubeActivity.YOUTUBE_VIDEO_ID = arr[item];
 
                 youtubeLink = "https://www.youtube.com/watch?v=";
@@ -332,5 +370,28 @@ public class Home extends Fragment {
     private void hideDialog() {
         if (pDialog.isShowing())
             pDialog.dismiss();
+    }
+
+    public File urlImage(String urlString, int position) {
+        InputStream iStream= null;
+        URL url;
+        File tmpFile = null;
+        try {
+            url = new URL(urlString);
+            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+            urlConnection.connect();
+            iStream = urlConnection.getInputStream();
+            File cacheDirectory = getActivity().getBaseContext().getCacheDir();
+            tmpFile = new File(cacheDirectory.getPath() + "/wpta_" + position + ".jpg");
+            FileOutputStream fOutStream = new FileOutputStream(tmpFile);
+            Bitmap b = BitmapFactory.decodeStream(iStream);
+            b.compress(Bitmap.CompressFormat.JPEG,10, fOutStream);
+            Toast.makeText(getContext(), "Hola" + tmpFile.getAbsolutePath(), Toast.LENGTH_LONG).show();
+            fOutStream.flush();
+            fOutStream.close();
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+        return tmpFile;
     }
 }
