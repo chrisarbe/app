@@ -12,7 +12,7 @@ import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerView;
 
 public class YoutubeActivity extends YouTubeBaseActivity
-            implements YouTubePlayer.OnInitializedListener {
+        implements YouTubePlayer.OnInitializedListener {
 
 
     private static final String TAG = "YouTubeActivity";
@@ -36,9 +36,9 @@ public class YoutubeActivity extends YouTubeBaseActivity
     }
 
     @Override
-    public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b) {
+    public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean wasRestored) {
         Log.d(TAG, "Exito");
-        if (!b) {
+        if (!wasRestored) {
             youTubePlayer.loadVideo(YOUTUBE_VIDEO_ID);
         }
     }

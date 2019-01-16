@@ -20,6 +20,7 @@ import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TabHost;
@@ -120,8 +121,7 @@ public class Home extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         final View rootView = inflater.inflate(R.layout.fragment_home, container, false);
         Resources res = getResources();
@@ -237,7 +237,7 @@ public class Home extends Fragment {
                             values = new String[]{};
                             List<String> listFromArray = Arrays.asList(values);
                             List<String> tempList = new ArrayList<String>(listFromArray);
-                            arr = Arrays.copyOf(arr, 20); // new size will be 10 elements
+                            arr = Arrays.copyOf(arr, 50); // new size will be 10 elements
                             for (int i = 0; i < size; i++) {
                                 JSONObject another_json_object = the_json_array.getJSONObject(i);
                                 JSONObject result3 = new JSONObject(another_json_object.getString("snippet"));
@@ -282,6 +282,7 @@ public class Home extends Fragment {
                 View view =super.getView(position, convertView, parent);
 
                 TextView textView=(TextView) view.findViewById(android.R.id.text1);
+                //ImageView imageView=(ImageView) view.findViewById(android.R.id.icon1);
 
                 /*YOUR CHOICE OF COLOR*/
                 textView.setTextColor(Color.WHITE);

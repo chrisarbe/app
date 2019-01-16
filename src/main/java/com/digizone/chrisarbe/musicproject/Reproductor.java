@@ -278,7 +278,7 @@ public class Reproductor extends Fragment {
             lista.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view, int pos, long l) {
-                    posGlobal = pos;
+
 
                     String url = arrPath[pos];
                     String artitsAlbum = artistaAlbumLista[pos];
