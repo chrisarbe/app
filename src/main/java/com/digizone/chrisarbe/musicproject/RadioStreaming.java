@@ -117,8 +117,8 @@ public class RadioStreaming extends Fragment {
         MobileAds.initialize(getContext(), "ca-app-pub-8744365861161319~7639300880");
 
         AdView banner2 = (AdView) rootView.findViewById(R.id.banner2);
-        AdRequest adRequest = new AdRequest.Builder().build();
-        //AdRequest adRequest = new AdRequest.Builder().addTestDevice("DC4FDD8F9668C1895E13BF225BFC8268").build();
+        //AdRequest adRequest = new AdRequest.Builder().build();
+        AdRequest adRequest = new AdRequest.Builder().addTestDevice("DC4FDD8F9668C1895E13BF225BFC8268").build();
         banner2.loadAd(adRequest);
 
         final ListView milista = (ListView)rootView.findViewById(R.id.lista_radio);

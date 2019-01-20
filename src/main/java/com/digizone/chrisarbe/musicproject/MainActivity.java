@@ -53,8 +53,8 @@ public class MainActivity extends AppCompatActivity
         MobileAds.initialize(this, "ca-app-pub-8744365861161319~7639300880");
 
         AdView banner1 = (AdView) findViewById(R.id.banner1);
-        AdRequest adRequest = new AdRequest.Builder().build();
-        //AdRequest adRequest = new AdRequest.Builder().addTestDevice("DC4FDD8F9668C1895E13BF225BFC8268").build();
+        //AdRequest adRequest = new AdRequest.Builder().build();
+        AdRequest adRequest = new AdRequest.Builder().addTestDevice("DC4FDD8F9668C1895E13BF225BFC8268").build();
         banner1.loadAd(adRequest);
 
 
@@ -74,8 +74,8 @@ public class MainActivity extends AppCompatActivity
         //---------
         mInterstitialAd = new InterstitialAd(this);
         mInterstitialAd.setAdUnitId("ca-app-pub-8744365861161319/8230498605");
-        mInterstitialAd.loadAd(new AdRequest.Builder().build());
-        //mInterstitialAd.loadAd(new AdRequest.Builder().addTestDevice("DC4FDD8F9668C1895E13BF225BFC8268").build());
+        //mInterstitialAd.loadAd(new AdRequest.Builder().build());
+        mInterstitialAd.loadAd(new AdRequest.Builder().addTestDevice("DC4FDD8F9668C1895E13BF225BFC8268").build());
 
         //---------
 
@@ -141,7 +141,7 @@ public class MainActivity extends AppCompatActivity
             fragment = new RadioStreaming();
             fragment_selected = true;
         } else if (id == R.id.nav_share) {
-
+            startActivity(new Intent(MainActivity.this, Reproductor2.class));
         }
 
         if(fragment_selected){

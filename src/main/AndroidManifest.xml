@@ -8,11 +8,6 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
-    <!-- To auto-complete the email text field in the login form with the user's emails
-    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
-    <uses-permission android:name="android.permission.READ_PROFILE" />
-    <uses-permission android:name="android.permission.READ_CONTACTS" />-->
-
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -21,6 +16,12 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:node="replace">
+        <activity android:name=".Reproductor2">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.digizone.chrisarbe.musicproject.MainActivity" />
+        </activity>
+
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="ca-app-pub-8744365861161319~7639300880" />
@@ -90,6 +91,21 @@
         <activity
             android:name=".LoginActivity"
             android:label="Iniciar Sesion" />
+
+        <service
+            android:name=".service.MusicService"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.media.browse.MediaBrowserService"/>
+            </intent-filter>
+        </service>
+
+        <receiver android:name="android.support.v4.media.session.MediaButtonReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.MEDIA_BUTTON"/>
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

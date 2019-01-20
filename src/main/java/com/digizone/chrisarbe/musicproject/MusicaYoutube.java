@@ -179,8 +179,8 @@ public class MusicaYoutube extends Fragment {
 
         mInterstitialAd = new InterstitialAd(getContext());
         mInterstitialAd.setAdUnitId("ca-app-pub-8744365861161319/1978590729");
-        mInterstitialAd.loadAd(new AdRequest.Builder().build());
-        //mInterstitialAd.loadAd(new AdRequest.Builder().addTestDevice("DC4FDD8F9668C1895E13BF225BFC8268").build());
+        //mInterstitialAd.loadAd(new AdRequest.Builder().build());
+        mInterstitialAd.loadAd(new AdRequest.Builder().addTestDevice("DC4FDD8F9668C1895E13BF225BFC8268").build());
 
         if (mInterstitialAd.isLoaded()) {
             mInterstitialAd.show();
