@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -22,12 +24,15 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.MediaController;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
+
+import java.io.File;
+
+import static android.provider.MediaStore.Audio.Albums.*;
 
 
 /**
@@ -60,7 +65,6 @@ public class Reproductor extends Fragment {
 
     Button play_pause, btn_repetir, btn_anterior,btn_siguiente,btn_stop;
     MediaPlayer mp;
-    ImageView iv;
     int repetir = 2, posicion = 0;
     boolean sonando;
     int sonandoPos;
@@ -77,6 +81,8 @@ public class Reproductor extends Fragment {
     TextView title2, artist, time; //pendiente de tiitle2 por solo title.........
     public String[] audioLista, artistLista, arrPath,musicTime, artistaAlbumLista;
     ListView lista;
+    ImageView albumImg;
+    String urlAlbum;
     public int posGlobal;
 
     private static final int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 1 ;
@@ -136,23 +142,10 @@ public class Reproductor extends Fragment {
 
         View rootview = inflater.inflate(R.layout.fragment_reproductor, container, false);
 
-        //---------
-        mInterstitialAd = new InterstitialAd(getContext());
-        mInterstitialAd.setAdUnitId("ca-app-pub-8744365861161319/8230498605");
-        //mInterstitialAd.loadAd(new AdRequest.Builder().build());
-        mInterstitialAd.loadAd(new AdRequest.Builder().addTestDevice("DC4FDD8F9668C1895E13BF225BFC8268").build());
-
-        //---------
-
         home = (FloatingActionButton) rootview.findViewById(R.id.fab2);
         home.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (mInterstitialAd.isLoaded()) {
-                    mInterstitialAd.show();
-                } else {
-                    Log.d("TAG", "The interstitial wasn't loaded yet.");
-                }
                 Fragment fragment = null;
                 fragment = new Home();
                 getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.Contenedor, fragment).commit();
@@ -200,6 +193,7 @@ public class Reproductor extends Fragment {
         arrPath = new String[count];
         musicTime = new String[count];
         artistaAlbumLista = new String[count];
+
 
         ID_Column = audioCursor.getColumnIndex(MediaStore.Audio.Media._ID);
         DATA_Column = audioCursor.getColumnIndex(MediaStore.Audio.Media.DATA);
@@ -253,37 +247,51 @@ public class Reproductor extends Fragment {
             title2 = (TextView) view.findViewById(R.id.textView_Title);
             artist = (TextView) view.findViewById(R.id.textView_Artist);
             time = (TextView) view.findViewById(R.id.textView_Time);
-
+            albumImg = (ImageView) view.findViewById(R.id.imageView_Pista);
 
             title2.setId(i);
             artist.setId(i);
+            albumImg.setId(i);
+
 
             title2.setText(audioLista[i]);
             artist.setText(artistLista[i]);
             long tmp = Integer.parseInt(musicTime[i]);
             time.setText(convertDuration(tmp));
+            String artitsAlbum = artistaAlbumLista[i];
+            String urlAlbum = urlAlbunArt(artitsAlbum);
+            imgUrlAlbum(urlAlbum);
 
             lista.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view, int pos, long l) {
-                    posGlobal = pos;
+
+
                     String url = arrPath[pos];
                     String artitsAlbum = artistaAlbumLista[pos];
                     String urlAlbum = urlAlbunArt(artitsAlbum);
-                    /*Intent intent = new Intent(String.valueOf(Reproductive.class));
-                    intent.putExtra("Url",url);
-                    startActivity(intent);*/
+
                     Intent intent = (new Intent(getActivity(), Reproductive.class));
                     intent.putExtra("Url",url);
                     intent.putExtra("urlAlbum",urlAlbum);
-                    intent.putExtra("arrPath",arrPath);
-                    intent.putExtra("posicion",pos);
                     startActivity(intent);
 
                 }
             });
 
             return view;
+        }
+
+        private void imgUrlAlbum (String imgUrlAlbum){
+            if (imgUrlAlbum == null){
+                albumImg.setImageResource(R.drawable.logo);
+            }else {
+                File imgFile = new File(imgUrlAlbum);
+                if (imgFile.exists()){
+                    Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+                    albumImg.setImageBitmap(myBitmap);
+                }
+            }
         }
 
         public String convertDuration(long duration){
@@ -317,14 +325,14 @@ public class Reproductor extends Fragment {
         }
 
         private String urlAlbunArt(String artistAlbum){
-            String[] projection = new  String[]{MediaStore.Audio.Albums.ALBUM_ART};
-            String selection = MediaStore.Audio.Albums._ID + "=?";
+            String[] projection = new  String[]{ALBUM_ART};
+            String selection = _ID + "=?";
             String[] selectionArt = new String[]{artistAlbum};
-            Cursor cursor = getActivity().getContentResolver().query(MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI,projection,selection,selectionArt,null);
+            Cursor cursor = getActivity().getContentResolver().query(EXTERNAL_CONTENT_URI,projection,selection,selectionArt,null);
             String urlAlbum = "";
             if(cursor != null){
                 if (cursor.moveToFirst()){
-                    urlAlbum = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Albums.ALBUM_ART));
+                    urlAlbum = cursor.getString(cursor.getColumnIndexOrThrow(ALBUM_ART));
                 }
                 cursor.close();
             }

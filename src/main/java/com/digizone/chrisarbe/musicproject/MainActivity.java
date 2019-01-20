@@ -41,6 +41,8 @@ public class MainActivity extends AppCompatActivity
 
     public static FloatingActionButton fab;
 
+    private InterstitialAd mInterstitialAd;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,8 +53,8 @@ public class MainActivity extends AppCompatActivity
         MobileAds.initialize(this, "ca-app-pub-8744365861161319~7639300880");
 
         AdView banner1 = (AdView) findViewById(R.id.banner1);
-        //AdRequest adRequest = new AdRequest.Builder().build();
-        AdRequest adRequest = new AdRequest.Builder().addTestDevice("DC4FDD8F9668C1895E13BF225BFC8268").build();
+        AdRequest adRequest = new AdRequest.Builder().build();
+        //AdRequest adRequest = new AdRequest.Builder().addTestDevice("DC4FDD8F9668C1895E13BF225BFC8268").build();
         banner1.loadAd(adRequest);
 
 
@@ -67,6 +69,15 @@ public class MainActivity extends AppCompatActivity
 
         Fragment fragment = null;
         fragment = new Home();
+
+
+        //---------
+        mInterstitialAd = new InterstitialAd(this);
+        mInterstitialAd.setAdUnitId("ca-app-pub-8744365861161319/8230498605");
+        mInterstitialAd.loadAd(new AdRequest.Builder().build());
+        //mInterstitialAd.loadAd(new AdRequest.Builder().addTestDevice("DC4FDD8F9668C1895E13BF225BFC8268").build());
+
+        //---------
 
         getSupportFragmentManager().beginTransaction().replace(R.id.Contenedor, fragment).commit();
     }
@@ -120,6 +131,11 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_gallery) {
             fragment = new Reproductor();
             fragment_selected = true;
+            if (mInterstitialAd.isLoaded()) {
+                mInterstitialAd.show();
+            } else {
+                Log.d("TAG", "The interstitial wasn't loaded yet.");
+            }
         } else if (id == R.id.nav_slideshow) {
             //startActivity(new Intent(MainActivity.this, RadioStream.class));
             fragment = new RadioStreaming();

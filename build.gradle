@@ -6,8 +6,8 @@ android {
         applicationId "com.digizone.chrisarbe.musicproject"
         minSdkVersion 15
         targetSdkVersion 27
-        versionCode 5
-        versionName "3.0"
+        versionCode 7
+        versionName "3.5"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {

@@ -35,6 +35,7 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.gms.ads.AdRequest;
@@ -265,7 +266,9 @@ public class Home extends Fragment {
                                 JSONObject result6 = new JSONObject(result5.getString("default"));
                                 //Toast.makeText(getContext(), "Hola: "+ result6.getString("url"), Toast.LENGTH_LONG).show();
 
-                                File tmpFile = urlImage(result6.getString("url"), i);
+                                //File tmpFile = urlImage(result6.getString("url"), i);
+
+                                //ImageView image = (ImageView) getView().findViewById(R.id.iconList);
 
                                 HashMap<String, String> hm = new HashMap<String, String>();
                                 hm.put("name", result3.getString("title"));
@@ -303,7 +306,7 @@ public class Home extends Fragment {
 
         final ListView milista = (ListView)getView().findViewById(R.id.lista_tab1);
 
-        ImageView img=(ImageView)getView().findViewById(R.id.iconList);
+        final ImageView img=(ImageView)getView().findViewById(R.id.iconList);
 
         /*
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1, values){
@@ -320,7 +323,7 @@ public class Home extends Fragment {
         };*/
 
         String[] from={"name","image"};//string array
-        int[] to={R.id.nombre_fila_lista,R.id.iconList};//int array of views id's
+        int[] to={R.id.nombre_fila_lista, R.id.iconList};//int array of views id's
 
         SimpleAdapter simpleAdapter = new SimpleAdapter(getActivity(), aList, R.layout.fila_lista, from, to);
         milista.setAdapter(simpleAdapter);
@@ -360,6 +363,7 @@ public class Home extends Fragment {
             }
         });
         hideDialog();
+
     }
 
     private void showDialog() {

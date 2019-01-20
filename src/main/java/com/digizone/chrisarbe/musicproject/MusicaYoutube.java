@@ -179,8 +179,8 @@ public class MusicaYoutube extends Fragment {
 
         mInterstitialAd = new InterstitialAd(getContext());
         mInterstitialAd.setAdUnitId("ca-app-pub-8744365861161319/1978590729");
-        //mInterstitialAd.loadAd(new AdRequest.Builder().build());
-        mInterstitialAd.loadAd(new AdRequest.Builder().addTestDevice("DC4FDD8F9668C1895E13BF225BFC8268").build());
+        mInterstitialAd.loadAd(new AdRequest.Builder().build());
+        //mInterstitialAd.loadAd(new AdRequest.Builder().addTestDevice("DC4FDD8F9668C1895E13BF225BFC8268").build());
 
         if (mInterstitialAd.isLoaded()) {
             mInterstitialAd.show();
@@ -217,6 +217,7 @@ public class MusicaYoutube extends Fragment {
         });
 
         mainLayout = (LinearLayout) rootView.findViewById(R.id.main_layout);
+        mainLayout.setVisibility(View.GONE);
 
         dialogSearch = createSearhDialog();
         dialogSearch.show();
@@ -545,6 +546,7 @@ public class MusicaYoutube extends Fragment {
     private void getYoutubeDownloadUrl(String youtubeLink) {
         mainLayout = (LinearLayout) getView().findViewById(R.id.main_layout);
         mainLayout.removeAllViews();
+        addButtonClose();
         new YouTubeExtractor(getActivity()) {
             /*
             @Override
@@ -681,8 +683,27 @@ public class MusicaYoutube extends Fragment {
                 }
                 if (ytFrVideo.audioFile != null)
                     cacheDownloadIds(downloadIds);
-                //getActivity().finish();
+
+                //variable.cargarFragment();
+                //busquedaVideos(terminoBusqueda);
+
+                mainLayout.setVisibility(View.GONE);
+                Toast.makeText(getContext(), "Descargando...", Toast.LENGTH_LONG).show();
             }
+        });
+        mainLayout.addView(btn);
+    }
+
+    private void addButtonClose () {
+        Button btn = new Button(getContext());
+        btn.setText("Cerrar");
+        btn.setBackgroundColor(Color.parseColor("#E74C3C"));
+        mainLayout = (LinearLayout) getView().findViewById(R.id.main_layout);
+        btn.setOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View v) {
+               mainLayout.setVisibility(View.GONE);
+           }
         });
         mainLayout.addView(btn);
     }
