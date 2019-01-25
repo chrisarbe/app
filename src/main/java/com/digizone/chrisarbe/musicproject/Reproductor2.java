@@ -33,6 +33,8 @@ public class Reproductor2 extends AppCompatActivity {
 
     private boolean mIsPlaying;
 
+    public String FilePath;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,6 +45,9 @@ public class Reproductor2 extends AppCompatActivity {
         mAlbumArt = findViewById(R.id.album_art);
         mMediaControlsImage = findViewById(R.id.media_controls);
         mSeekBarAudio = findViewById(R.id.seekbar_audio);
+
+        Bundle bundle = this.getIntent().getExtras();
+        FilePath = bundle.getString("Url");
 
         final ClickListener clickListener = new ClickListener();
         findViewById(R.id.button_previous).setOnClickListener(clickListener);

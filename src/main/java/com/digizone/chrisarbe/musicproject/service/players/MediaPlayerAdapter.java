@@ -24,6 +24,8 @@ public final class MediaPlayerAdapter extends PlayerAdapter {
     private int mState;
     private boolean mCurrentMediaPlayedToCompletion;
 
+    public Reproductor2 variable;
+
     // Work-around for a MediaPlayer bug related to the behavior of MediaPlayer.seekTo()
     // while not playing.
     private int mSeekWhileNotPlaying = -1;
@@ -93,13 +95,11 @@ public final class MediaPlayerAdapter extends PlayerAdapter {
         mFilename = filename;
 
         initializeMediaPlayer();
-        /*
+
         try {
-            AssetFileDescriptor assetFileDescriptor = mContext.getAssets().openFd(mFilename);
+            //AssetFileDescriptor assetFileDescriptor = mContext.getAssets().openFd(mFilename);
             mMediaPlayer.setDataSource(
-                    assetFileDescriptor.getFileDescriptor(),
-                    assetFileDescriptor.getStartOffset(),
-                    assetFileDescriptor.getLength());
+                    "/storage/emulated/0/zedge/ringtone/Alan_Walker_Faded-343884ba-1bf0-4859-b04a-02557e2dae1e.mp3");
         } catch (Exception e) {
             throw new RuntimeException("Failed to open file: " + mFilename, e);
         }
@@ -110,8 +110,8 @@ public final class MediaPlayerAdapter extends PlayerAdapter {
             throw new RuntimeException("Failed to open file: " + mFilename, e);
         }
 
-        play();
-        */
+        //play();
+
     }
 
     @Override

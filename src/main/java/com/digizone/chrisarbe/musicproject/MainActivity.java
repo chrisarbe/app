@@ -141,7 +141,7 @@ public class MainActivity extends AppCompatActivity
             fragment = new RadioStreaming();
             fragment_selected = true;
         } else if (id == R.id.nav_share) {
-            startActivity(new Intent(MainActivity.this, Reproductor2.class));
+            //startActivity(new Intent(MainActivity.this, Reproductor2.class));
         }
 
         if(fragment_selected){

@@ -275,6 +275,8 @@ public class Reproductor extends Fragment {
                     intent.putExtra("Url",url);
                     intent.putExtra("urlAlbum",urlAlbum);
                     startActivity(intent);
+                    //Toast.makeText(getContext(), url, Toast.LENGTH_LONG).show();
+                    //Log.d("Hola",url);
 
                 }
             });

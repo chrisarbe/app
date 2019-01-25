@@ -15,9 +15,8 @@ import android.support.v4.media.session.PlaybackStateCompat;
 import android.util.Log;
 
 
-/*
-import com.example.android.mediasession.service.MusicService;
-*/
+import com.digizone.chrisarbe.musicproject.service.MusicService;
+
 
 
 
